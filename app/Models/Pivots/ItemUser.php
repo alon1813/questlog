@@ -3,7 +3,8 @@
 namespace App\Models\Pivots;
 
 use App\Models\User;
-use App\Models\Item; 
+use App\Models\Item;
+use App\Models\Like;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class ItemUser extends Pivot
@@ -39,5 +40,13 @@ class ItemUser extends Pivot
     public function helpfulVotes()
     {
         return $this->belongsToMany(User::class, 'helpful_reviews', 'review_id', 'user_id');
+    }
+
+    public function likes(){
+        return $this->morphMany(Like::class, 'likeable');
+    }
+
+    public function isLikedBy(User $user){
+        return $this->likes()->where('user_id', $user->id)->exists();
     }
 }
