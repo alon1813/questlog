@@ -1,0 +1,111 @@
+/* resources/css/app.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tus variables CSS */
+:root {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-tertiary: #0f3460;
+    --text-primary: #e94560; /* Color principal (ej. para CTA, títulos) */
+    --text-secondary: #dcdcdc; /* Color de texto general */
+    --border-color: #533483; /* Color de borde */
+    /* Mantén tus otras variables aquí si tienes más */
+}
+
+/* Base styles - Tailwind's @tailwind base already handles much of this,
+   but we can add custom fonts/colors if they are not picked up by Tailwind classes */
+html { scroll-behavior: smooth; }
+
+body {
+    /* Estas propiedades son importantes para establecer el look&feel base */
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+    transition: background-color 0.3s;
+}
+
+/* Estilos para el switcher de vistas si lo sigues utilizando para desarrollo */
+.view-switcher {
+    background-color: #000;
+    padding: 10px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.view-switcher button {
+    background-color: var(--border-color);
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.view-switcher button.active {
+    background-color: var(--text-primary);
+}
+/* Estas clases .view y .view.active son para tu simulador,
+   no son clases de Tailwind y deben mantenerse */
+.view { display: none; }
+.view.active { display: block; }
+
+
+/* Clases de Componentes Personalizadas (minimizadas al máximo) */
+/* Solo mantenemos .cta-button aquí si queremos que sea una "component class"
+   que agrupe varios estilos. Si no, podemos usar solo utilidades en el HTML. */
+.cta-button {
+    display: inline-block;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: transform 0.2s, background-color 0.2s;
+    text-decoration: none; /* Asegura que no tenga subrayado */
+    color: #fff; /* Color de texto por defecto para cta-button */
+    background-color: var(--text-primary); /* Usa tu variable para el fondo */
+}
+.cta-button:hover {
+    background-color: #d43a54; /* Un tono ligeramente más oscuro de text-primary */
+    transform: scale(1.05);
+}
+.cta-button-secondary {
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    color: var(--text-secondary); /* O el color que quieras para el texto secundario */
+}
+.cta-button-secondary:hover {
+    background-color: var(--border-color); /* Un fondo al hacer hover para el secundario */
+    color: #fff; /* Texto blanco al hacer hover */
+    transform: scale(1.05);
+}
+
+
+/* --- SE HAN ELIMINADO TODAS LAS CLASES DE COMPONENTES DE LANDING/DASHBOARD ---
+   como .container, .navbar, .hero, .features, .feature-card, .logo, .nav-links,
+   .search-bar, .user-nav, .dashboard-layout, .feed-item, .avatar, .review-box,
+   .sidebar, .widget, etc.
+
+   Estas ahora deben ser reemplazadas por CLASES DE UTILIDAD DE TAILWIND directamente
+   en el HTML de tu landing.blade.php.
+*/
+
+/*
+   Si aún necesitas algún ajuste muy específico que no puedes lograr con Tailwind,
+   puedes añadirlo aquí con selectores más específicos, PERO siempre intentando
+   que Tailwind sea la opción principal.
+*/
+
+
+/* Responsive adjustments for elements that still have custom classes */
+/* Aquí solo las reglas para el switcher y los cta-button,
+   el resto de responsividad se manejará con Tailwind en el HTML. */
+@media (max-width: 900px) {
+    /* Ya no necesitaríamos reglas para .dashboard-layout o .features-grid aquí,
+       porque Tailwind manejará eso con grid-cols-1 md:grid-cols-3, etc. */
+}

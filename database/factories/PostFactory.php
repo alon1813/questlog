@@ -1,0 +1,29 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
+ */
+class PostFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            // si no especificamos autor cree un usuario nuevo
+            'user_id' => User::factory(),
+            'title' => fake()->sentence(4),
+            'body' => fake()->paragraphs(5, true),
+            'image_url' => null,
+            'status' => 'published', //todos los posts creados con la factory son publicados
+        ];
+    }
+}
