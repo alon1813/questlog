@@ -15,7 +15,8 @@ use App\Http\Controllers\ShopController;
 use App\Models\Activity;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\LandingPageController; 
-use App\Http\Controllers\DashboardController; 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ItemController; 
 
 
 Route::get('/', function () {
@@ -66,7 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/usuarios/{user}/follow', [FollowController::class, 'follow'])->name('users.follow');
     Route::delete('/usuarios/{user}/unfollow', [FollowController::class, 'unfollow'])->name('users.unfollow');
     Route::get('/notificaciones', [NotificationController::class, 'index'])->name('notifications.index');
-
+    Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show'); // <--- ESTA LÍNEA ES CLAVE
 });
 
 Route::get('/usuarios/{user:username}', [UserProfileController::class, 'show'])->name('profiles.show');

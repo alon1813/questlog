@@ -132,6 +132,8 @@ return [
 
     'providers' => ServiceProvider::defaultProviders()->merge([
         // ... otros proveedores ...
+        App\Providers\AppServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
         App\Providers\ViewServiceProvider::class, // <-- ESTA LÍNEA DEBE ESTAR AQUÍ
     ])->toArray(),
 
