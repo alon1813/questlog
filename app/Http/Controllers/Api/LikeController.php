@@ -74,7 +74,7 @@ class LikeController extends Controller
 {
     public function store(ItemUser $itemUser): JsonResponse
 {
-    Log::debug('LikeController@store: Petición RECIBIDA y FORZANDO ÉXITO con 200 OK.');
+    Log::debug('LikeController@store: Petición RECIBIDA y FORZANDO ÉXITO con 200 OK.'); // <--- ¡Este log es CRUCIAL!
     return response()->json([
         'message' => '¡Éxito forzado de Like!',
         'likes_count' => $itemUser->likes_count + 1,
@@ -82,13 +82,13 @@ class LikeController extends Controller
     ], 200);
 }
 
-    public function destroy(ItemUser $itemUser): JsonResponse
-    {
-        Log::debug('LikeController@destroy: Petición RECIBIDA y FORZANDO ÉXITO.');
-        return response()->json([
-            'message' => '¡Éxito forzado de Unlike!',
-            'likes_count' => max(0, $itemUser->likes_count - 1), // Restamos 1
-            'is_liked' => false
-        ], 200); // Devuelve 200 OK
-    }
+public function destroy(ItemUser $itemUser): JsonResponse
+{
+    Log::debug('LikeController@destroy: Petición RECIBIDA y FORZANDO ÉXITO con 200 OK.'); // <--- ¡Este log es CRUCIAL!
+    return response()->json([
+        'message' => '¡Éxito forzado de Unlike!',
+        'likes_count' => max(0, $itemUser->likes_count - 1),
+        'is_liked' => false
+    ], 200);
+}
 }

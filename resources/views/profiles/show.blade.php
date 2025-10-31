@@ -102,20 +102,7 @@
 
                                 {{-- Botón de "Me Gusta" (solo si se puede interactuar) --}}
                                 @if ($canInteractWithLike)
-                                    <div 
-                                        class="absolute bottom-2 left-2 z-20" 
-                                        data-like-wrapper 
-                                        data-item-user-id="{{ $itemUser->id }}" 
-                                        data-is-liked="{{ $isLikedByCurrentUser ? 'true' : 'false' }}"
-                                    >
-                                        <button 
-                                            data-like-button
-                                            class="px-2 py-1 rounded-full text-xs font-medium focus:outline-none transition-colors duration-200 shadow-md flex items-center space-x-1"
-                                        >
-                                            <i class="{{ $isLikedByCurrentUser ? 'fas fa-heart' : 'far fa-heart' }}"></i> 
-                                            <span data-likes-count>{{ $itemUser->likes_count }}</span>
-                                        </button>
-                                    </div>
+                                    <livewire:like-button :itemUser="$itemUser" :key="'like-btn-'.$itemUser->id" />
                                 @endif
                             </div>
                         @endforeach

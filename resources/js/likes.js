@@ -1,5 +1,5 @@
 // Importa axios si no está globalmente en window.axios
-// import axios from 'axios'; 
+import axios from 'axios'; 
 
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-like-wrapper]').forEach(wrapper => {

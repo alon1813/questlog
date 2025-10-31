@@ -67,7 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/usuarios/{user}/follow', [FollowController::class, 'follow'])->name('users.follow');
     Route::delete('/usuarios/{user}/unfollow', [FollowController::class, 'unfollow'])->name('users.unfollow');
     Route::get('/notificaciones', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show'); // <--- ESTA LÍNEA ES CLAVE
+    Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
 });
 
 Route::get('/usuarios/{user:username}', [UserProfileController::class, 'show'])->name('profiles.show');
