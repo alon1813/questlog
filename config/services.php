@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    'rawg' => [
+        'key' => env('RAWG_API_KEY'),
+        'url' => 'https://api.rawg.io/api/', // Opcional, pero consistente
+    ],
+
+    'jikan' => [
+        'url' => env('JIKAN_API_URL', 'https://api.jikan.moe/v4'), // Esto es lo importante para Jikan
+    ],
+
 ];

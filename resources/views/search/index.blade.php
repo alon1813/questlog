@@ -7,11 +7,9 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            {{-- La tarjeta blanca/oscura que contiene todo --}}
+
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6"> 
 
-                {{-- Contenedor de la barra de búsqueda --}}
-                {{-- Elimino el bg-gray-900 del mío porque ya está en el padre (bg-white/dark:bg-gray-800) --}}
                 <form action="{{ route('search.index') }}" method="GET" class="mb-6">
                     {{-- Contenedor principal del input y botón --}}
                     <div class="flex items-center gap-4">
@@ -22,9 +20,9 @@
                                 name="query"
                                 placeholder="Busca tus juegos o animes favoritos..."
                                 class="w-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400
-                                       py-3 px-5 rounded-lg border border-gray-300 dark:border-gray-600
-                                       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                       transition-all duration-200 ease-in-out shadow-sm"
+                                    py-3 px-5 rounded-lg border border-gray-300 dark:border-gray-600
+                                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                    transition-all duration-200 ease-in-out shadow-sm"
                                 value="{{ request('query') }}"
                             >
                         </div>
@@ -33,9 +31,9 @@
                         <button
                             type="submit"
                             class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800
-                                   text-white font-bold py-3 px-8 rounded-lg
-                                   transition-all duration-200 ease-in-out
-                                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800 shadow-md"
+                                text-white font-bold py-3 px-8 rounded-lg
+                                transition-all duration-200 ease-in-out
+                                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800 shadow-md"
                         >
                             BUSCAR
                         </button>

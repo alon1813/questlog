@@ -67,7 +67,7 @@ class SearchController extends Controller
 
             // --- Lógica para marcar ítems en la colección y obtener el ID del pivot ---
             if (Auth::check()) {
-                /** @var \App\Models\User $user */ // <<-- ¡¡¡Esta es la línea para el tipado del IDE!!!
+                /** @var \App\Models\User $user */ 
                 $user = Auth::user();
 
                 // Primero, obtenemos todos los Item.id de la base de datos que corresponden a los resultados de la API.
@@ -81,8 +81,8 @@ class SearchController extends Controller
                 $typesToSearch = array_column($apiItemIdentifiers, 'type');
 
                 $dbItems = Item::whereIn('api_id', $apiIdsToSearch)
-                               ->whereIn('type', $typesToSearch)
-                               ->get();
+                            ->whereIn('type', $typesToSearch)
+                            ->get();
 
                 // Luego, obtenemos los ítems que el usuario tiene en su colección,
                 // incluyendo el pivot, y los indexamos por 'item_id' para fácil acceso.
@@ -112,12 +112,10 @@ class SearchController extends Controller
                     $result['user_list_item_id'] = $inCollectionItem->pivot->id;
                 }
             }
-            // --- FIN Lógica para marcar ítems en la colección ---
+            
         }
 
-        // --- ¡¡¡AÑADE ESTA LÍNEA DE DEPURACIÓN AQUÍ!!! ---
-        // dd($results); // <<-- Descomenta esta línea
-        // --- FIN DEPURACIÓN ---
+
 
         return view('search.index', [
             'results' => $results,
