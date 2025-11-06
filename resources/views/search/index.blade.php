@@ -6,7 +6,8 @@
 
             <div id="react-search"> </div> 
             @viteReactRefresh 
-            @vite(['resources/js/app.js', 'resources/js/components/SearchPage.jsx'])
+            @vite(['resources/js/app.js', 'resources/js/main.jsx'])
+
             
             @if (session('success')) 
                 <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded dark:bg-green-900 dark:text-green-200" role="alert"> 

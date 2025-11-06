@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ReactDOM from "react-dom/client";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function SearchPage() {
     const [query, setQuery] = useState("");
@@ -8,43 +9,54 @@ export default function SearchPage() {
     const [type, setType] = useState("anime");
     const [loading, setLoading] = useState(false);
 
-    // --- Lógica de Búsqueda (Sin cambios) ---
+    const handleSearch = () => {
+        if (query.trim().length < 2) {
+            setResults([]);
+            return;
+        }
+        setLoading(true);
+        axios
+            .get(`/search`, { params: { query, type } })
+            .then((response) => {
+                setResults(Array.isArray(response.data) ? response.data : []);
+            })
+            .catch(() => setResults([]))
+            .finally(() => setLoading(false));
+    };
+
+    // --- Búsqueda automática al escribir ---
     useEffect(() => {
         if (query.length < 2) {
             setResults([]);
             return;
         }
-
         const delayDebounceFn = setTimeout(() => {
-            setLoading(true);
-            axios
-                .get(`/search`, { params: { query, type } })
-                .then((response) => {
-                    if (Array.isArray(response.data)) {
-                        setResults(response.data);
-                    } else {
-                        setResults([]);
-                    }
-                })
-                .catch(() => setResults([]))
-                .finally(() => setLoading(false));
+            handleSearch();
         }, 400);
-
         return () => clearTimeout(delayDebounceFn);
     }, [query, type]);
 
-    // --- Lógica de Añadir (Sin cambios) ---
+    // --- Enter ejecuta la búsqueda ---
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") handleSearch();
+    };
+
     const addToCollection = async (item) => {
         try {
-            const formData = {
+            const response = await axios.post("/mi-lista/guardar", {
                 api_id: item.api_id,
                 type: item.type,
                 title: item.title,
                 cover_image_url: item.cover_image_url,
                 episodes: item.episodes ?? null,
-            };
-            const response = await axios.post("/mi-lista/guardar", formData);
+            });
             const newId = response.data.user_list_item_id;
+
+            if (!newId) {
+                toast.error("Error: El servidor no devolvió un ID.");
+                console.error("Respuesta de 'guardar' sin ID:", response.data);
+                return;
+            }
 
             setResults((prev) =>
                 prev.map((r) =>
@@ -53,20 +65,18 @@ export default function SearchPage() {
                         : r
                 )
             );
+            toast.success(`✅ ${item.title} añadido a tu colección`);
         } catch (err) {
-            console.error("Error al añadir:", err);
-            alert("No se pudo añadir a tu lista.");
+            toast.error("No se pudo añadir a tu lista.");
         }
     };
 
-    // --- Lógica de Eliminar (Sin cambios) ---
     const removeFromCollection = async (item) => {
-        if (!item.user_list_item_id || isNaN(Number(item.user_list_item_id))) {
-            console.error("ID inválido para eliminar:", item.user_list_item_id);
-            alert("Error: El ID del item es inválido.");
+        if (!item.user_list_item_id) {
+            toast.error("Error: El ID del ítem no está definido.");
+            console.error("Intento de eliminar sin user_list_item_id:", item);
             return;
         }
-
         try {
             await axios.delete(`/mi-lista/${item.user_list_item_id}`);
             setResults((prev) =>
@@ -76,115 +86,142 @@ export default function SearchPage() {
                         : r
                 )
             );
+            toast("🗑️ Eliminado de tu colección");
         } catch (err) {
-            console.error("Error al eliminar:", err);
-            alert("No se pudo eliminar de tu lista.");
+            toast.error("No se pudo eliminar de tu lista.");
         }
     };
 
-    // ==========================================================
-    // --- 🎨 RENDERIZADO (Corregido para Light/Dark y Tamaño) ---
-    // ==========================================================
     return (
-        // Contenedor principal: fondo claro, fondo oscuro en dark mode
-        <div className="bg-slate-100 dark:bg-slate-900 text-gray-900 dark:text-white p-4 sm:p-8 rounded-xl min-h-[400px]">
-            
-            {/* --- Barra de Búsqueda --- */}
-            <div className="relative mb-8">
-                {/* Input de Búsqueda: texto oscuro en light, blanco en dark */}
+        <div
+            className={`bg-[#0f172a] text-white p-6 transition-all duration-500 ${
+                results.length > 0 ? "min-h-screen" : "min-h-[60vh]"
+            } flex flex-col items-center`}
+        >
+            <Toaster
+                position="top-right"
+                toastOptions={{
+                    style: {
+                        background: "#1e293b",
+                        color: "#fff",
+                        borderRadius: "10px",
+                        fontSize: "0.9rem",
+                    },
+                }}
+            />
+
+            {/* Selector arriba */}
+            <div className="flex gap-3 mb-4">
+                {["anime", "game"].map((t) => (
+                    <button
+                        key={t}
+                        onClick={() => setType(t)}
+                        className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
+                            type === t
+                                ? "bg-indigo-600 text-white"
+                                : "bg-slate-800 text-gray-300 hover:bg-slate-700"
+                        }`}
+                    >
+                        {t === "anime" ? "Anime" : "Videojuegos"}
+                    </button>
+                ))}
+            </div>
+
+            {/* Barra de búsqueda */}
+            <div className="flex w-full max-w-2xl mb-6 gap-2">
                 <input
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     placeholder={`Buscar ${type === "anime" ? "animes" : "videojuegos"}...`}
-                    className="w-full pl-4 pr-36 py-4 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg"
+                    // --- CORRECCIÓN DE COLOR ---
+                    // Forzamos el texto a ser oscuro (text-gray-900)
+                    className="flex-1 px-4 py-3 rounded-lg bg-white border border-slate-600 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none"
                 />
-
-                {/* Selector de Tipo: texto oscuro en light, blanco en dark */}
-                <select
-                    value={type}
-                    onChange={(e) => setType(e.target.value)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-gray-900 dark:text-white px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-0 focus:outline-none"
+                <button
+                    onClick={handleSearch}
+                    className="px-4 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition text-white font-semibold flex items-center justify-center gap-2"
                 >
-                    <option value="anime">Anime</option>
-                    <option value="game">Videojuego</option>
-                </select>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                    >
+                        <path
+                            // --- (Corrección de SVG) ---
+                            strokeLineCap="round"
+                            strokeLineJoin="round"
+                            d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z"
+                        />
+                    </svg>
+                    Buscar
+                </button>
             </div>
 
-            {/* --- Contenido (Loading, Vacío, o Resultados) --- */}
-            <div>
-                {loading ? (
-                    // --- Estado de Carga ---
-                    <div className="flex flex-col items-center justify-center py-16 text-slate-600 dark:text-slate-400">
-                        <p className="text-lg font-medium">Buscando...</p>
-                    </div>
+            {/* Texto informativo */}
+            {query && (
+                <p className="text-gray-400 text-sm mb-6">
+                    Mostrando resultados para: <span className="text-indigo-400">“{query}”</span>
+                </p>
+            )}
 
-                ) : results.length > 0 ? (
-                    // --- Grid de Resultados ---
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        {results.map((item) => (
-                            <div
-                                key={item.api_id || item.id}
-                                className="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden transition-all duration-300 ease-in-out hover:scale-[1.03] hover:shadow-indigo-500/30 hover:border-slate-300 dark:hover:border-slate-600"
-                            >
-                                <img
-                                    src={item.cover_image_url}
-                                    alt={item.title}
-                                    className="w-full h-48 object-cover"
-                                />
-                                <div className="p-4">
-                                    <p className="text-sm font-medium uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">
-                                        {item.type}
-                                    </p>
-                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate" title={item.title}>
-                                        {item.title}
-                                    </h3>
-                                    
-                                    {/* Botones */}
-                                    <div className="mt-4">
-                                        {item.in_collection ? (
-                                            <button
-                                                onClick={() => removeFromCollection(item)}
-                                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm w-full font-semibold transition-colors"
-                                            >
-                                                Eliminar de mi colección
-                                            </button>
-                                        ) : (
-                                            <button
-                                                onClick={() => addToCollection(item)}
-                                                className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-sm w-full font-semibold transition-colors"
-                                            >
-                                                Añadir a mi colección
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
+            {/* Resultados */}
+            {loading ? (
+                <p className="text-gray-400 text-center py-10 text-lg">Buscando...</p>
+            ) : results.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-5 w-full max-w-6xl">
+                    {results.map((item) => (
+                        <div
+                            key={item.api_id || item.id}
+                            className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+                        >
+                            <img
+                                src={item.cover_image_url}
+                                alt={item.title}
+                                // --- CORRECCIÓN DE TAMAÑO ---
+                                className="w-full h-44 object-cover" // Reducido a h-40
+                            />
+                            <div className="p-3">
+                                <h3
+                                    className="text-sm font-semibold text-white mb-1 truncate"
+                                    title={item.title}
+                                >
+                                    {item.title}
+                                </h3>
+                                <p className="text-xs text-gray-400 mb-2 capitalize">{item.type}</p>
+
+                                {item.in_collection ? (
+                                    <button
+                                        onClick={() => removeFromCollection(item)}
+                                        className="w-full bg-red-600 hover:bg-red-700 text-white py-1.5 rounded-md font-semibold text-xs flex items-center justify-center gap-1 transition"
+                                    >
+                                        ❌ Quitar
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => addToCollection(item)}
+                                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-1.5 rounded-md font-semibold text-xs flex items-center justify-center gap-1 transition"
+                                    >
+                                        ➕ Añadir
+                                    </button>
+                                )}
                             </div>
-                        ))}
-                    </div>
-
-                ) : query.length > 1 ? (
-                    // --- Estado de No Encontrado ---
-                    <div className="flex flex-col items-center justify-center py-16 text-slate-600 dark:text-slate-400">
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">No se encontraron resultados</h3>
-                        <p className="mt-2">No pudimos encontrar nada para "{query}".</p>
-                    </div>
-                
-                ) : (
-                    // --- Estado Inicial (Antes de buscar) ---
-                    <div className="flex flex-col items-center justify-center py-16 text-slate-500 dark:text-slate-500">
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-slate-300">¿Qué estás buscando?</h3>
-                        <p className="mt-2 text-slate-600 dark:text-slate-400">Empieza a escribir para ver los resultados.</p>
-                    </div>
-                )}
-            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : query.length > 1 ? (
+                <p className="text-gray-400 text-center py-10">
+                    No se encontraron resultados para “{query}”.
+                </p>
+            ) : (
+                <p className="text-gray-500 text-center py-10">
+                    Empieza a escribir para buscar.
+                </p>
+            )}
         </div>
     );
-}
-
-// --- Montaje de React 18 (Correcto) ---
-const el = document.getElementById("react-search");
-if (el) {
-    const root = ReactDOM.createRoot(el);
-    root.render(<SearchPage />);
 }

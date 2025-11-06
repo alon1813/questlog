@@ -35,9 +35,8 @@ class UserListItemController extends Controller
         return view('user-list.index', ['items' => $items, 'statusFilter' => $statusFilter]);
     }
     
-    public function store(Request $request)
+     public function store(Request $request)
     {
-        // 1. Validamos los datos (esto ya lo teníamos)
         $validated = $request->validate([
             'api_id' => 'required|integer',
             'type' => 'required|string|in:game,anime',
@@ -46,7 +45,6 @@ class UserListItemController extends Controller
             'episodes' => 'nullable|integer',
         ]);
 
-        // 2. Buscamos o creamos el Item (esto ya lo teníamos)
         $item = Item::firstOrCreate(
             ['api_id' => $validated['api_id'], 'type' => $validated['type']],
             [
@@ -56,32 +54,43 @@ class UserListItemController extends Controller
             ]
         );
 
-        // 3. Obtenemos al usuario
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // 4. --- ¡AQUÍ ESTÁ LA NUEVA LÓGICA! ---
-        // Verificamos si el usuario ya tiene este ítem en su colección
-        $isAlreadyAdded = $user->items()->where('item_id', $item->id)->exists();
+        // Buscamos si el ítem ya existe EN LA COLECCIÓN DEL USUARIO
+        $existingPivot = $user->items()->where('item_id', $item->id)->first();
 
-        if ($isAlreadyAdded) {
-            // Si ya lo tiene, volvemos con un mensaje de "info" (color azul)
-            return back()->with('info', '¡' . $item->title . ' ya estaba en tu colección!');
-        } else {
-            // Si no lo tiene, lo añadimos (con el estado 'Pendiente' por defecto)
-            $user->items()->attach($item->id, ['status' => 'Pendiente']);
-            // Y volvemos con un mensaje de "éxito" (color verde)
-            return back()->with('success', '¡' . $item->title . ' ha sido añadido a tu lista!');
-        }
-
+        // --- LÓGICA CORREGIDA ---
+        // 1. Comprobar si la petición es JSON (de React)
         if ($request->expectsJson()) {
+            if ($existingPivot) {
+                // Si ya existe, devolvemos el ID existente
+                return response()->json([
+                    'message' => 'El item ya estaba en tu colección.',
+                    'user_list_item_id' => $existingPivot->pivot->id 
+                ], 200); // 200 OK (o 409 Conflict)
+            }
+
+            // Si no existe, lo añadimos
+            $user->items()->attach($item->id, ['status' => 'Pendiente']);
+            // Obtenemos el ID del pivot recién creado
+            $pivotId = $user->items()->where('item_id', $item->id)->first()->pivot->id;
+
             return response()->json([
                 'message' => '¡' . $item->title . ' ha sido añadido a tu lista!',
-                'user_list_item_id' => $pivotId,
+                'user_list_item_id' => $pivotId // ¡Devolvemos el nuevo ID!
             ]);
         }
 
+        // 2. Si NO es JSON, es un formulario HTML (tu lógica antigua)
+        if ($existingPivot) {
+            return back()->with('info', '¡' . $item->title . ' ya estaba en tu colección!');
+        } else {
+            $user->items()->attach($item->id, ['status' => 'Pendiente']);
+            return back()->with('success', '¡' . $item->title . ' ha sido añadido a tu lista!');
+        }
     }
+
 
     public function edit(ItemUser $userListItem) // Laravel inyectará el modelo ItemUser (el registro pivot)
     {
