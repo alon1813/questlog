@@ -7,10 +7,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Item; // <<-- ¡¡¡Asegúrate de que este import existe!!!
-use App\Models\User; // <<-- ¡¡¡Asegúrate de que este import existe para el tipado del IDE!!!
-// Si ItemUser es un modelo Pivot separado que utilizas, también asegúrate de importarlo
-// use App\Models\Pivots\ItemUser; // Solo si lo usas directamente en este controlador
+use App\Models\Item; 
+use App\Models\User; 
 
 class SearchController extends Controller
 {
@@ -81,13 +79,14 @@ class SearchController extends Controller
                 $typesToSearch = array_column($apiItemIdentifiers, 'type');
 
                 $dbItems = Item::whereIn('api_id', $apiIdsToSearch)
-                               ->whereIn('type', $typesToSearch)
-                               ->get();
+                            ->whereIn('type', $typesToSearch)
+                            ->get();
 
                 // Luego, obtenemos los ítems que el usuario tiene en su colección,
                 // incluyendo el pivot, y los indexamos por 'item_id' para fácil acceso.
                 $userItemsInCollection = $user->items() // Ahora el IDE sabe que $user es de tipo User
                                             ->whereIn('item_id', $dbItems->pluck('id')) // Filtramos solo los que están en los resultados actuales
+                                            ->withPivot('id')
                                             ->get() // Obtenemos las instancias de Item con su pivot
                                             ->keyBy('id'); // Indexamos por el ID del modelo Item (no del pivot)
                                             // Con 'keyBy('id')', cada elemento de $userItemsInCollection es un modelo Item,
@@ -115,9 +114,10 @@ class SearchController extends Controller
             // --- FIN Lógica para marcar ítems en la colección ---
         }
 
-        // --- ¡¡¡AÑADE ESTA LÍNEA DE DEPURACIÓN AQUÍ!!! ---
-        // dd($results); // <<-- Descomenta esta línea
-        // --- FIN DEPURACIÓN ---
+        if ($request->ajax()) {
+             // Si la solicitud viene de React, devolvemos solo los resultados
+                return response()->json($results);
+            }
 
         return view('search.index', [
             'results' => $results,

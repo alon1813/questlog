@@ -73,6 +73,14 @@ class UserListItemController extends Controller
             // Y volvemos con un mensaje de "éxito" (color verde)
             return back()->with('success', '¡' . $item->title . ' ha sido añadido a tu lista!');
         }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => '¡' . $item->title . ' ha sido añadido a tu lista!',
+                'user_list_item_id' => $pivotId,
+            ]);
+        }
+
     }
 
     public function edit(ItemUser $userListItem) // Laravel inyectará el modelo ItemUser (el registro pivot)
@@ -161,27 +169,38 @@ class UserListItemController extends Controller
     }
 
     
-    public function destroy(ItemUser $userListItem) 
+    public function destroy(ItemUser $userListItem, Request $request) // 👈 1. Inyecta Request
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
+        // 2. Comprueba permisos y devuelve JSON en caso de error
         if ($userListItem->user_id !== $user->id) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'No tienes permiso para eliminar esta entrada.'], 403);
+            }
             return redirect()->route('user-list.index')->with('error', 'No tienes permiso para eliminar esta entrada.');
         }
 
-        $title = $userListItem->item->title; // Guarda el título antes de eliminar para el mensaje de éxito
+        $title = $userListItem->item->title; 
+        $itemId = $userListItem->item->id; // Guarda el ID antes de borrar
 
-        // Eliminar el registro del pivot (item_user) directamente
+        
         $userListItem->delete();
 
-        // Registro de actividad (opcional, pero buena práctica)
+        
         $user->activities()->create([
             'type' => 'deleted_list_item',
-            'subject_id' => $userListItem->item->id, // El ID del Item global
+            'subject_id' => $itemId, // 👈 3. Usa el ID guardado
             'subject_type' => Item::class, 
         ]);
 
+        // 4. Devuelve una respuesta JSON a React
+        if ($request->expectsJson()) {
+            return response()->json(['message' => '¡' . $title . ' ha sido eliminado de tu colección!']);
+        }
+        
+        // 5. Mantiene el redirect para formularios HTML normales
         return redirect()->route('user-list.index')->with('success', '¡' . $title . ' ha sido eliminado de tu colección!');
     }
 
