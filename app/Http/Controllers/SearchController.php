@@ -65,7 +65,7 @@ class SearchController extends Controller
 
             // --- Lógica para marcar ítems en la colección y obtener el ID del pivot ---
             if (Auth::check()) {
-                /** @var \App\Models\User $user */ // <<-- ¡¡¡Esta es la línea para el tipado del IDE!!!
+                /** @var \App\Models\User $user */ 
                 $user = Auth::user();
 
                 // Primero, obtenemos todos los Item.id de la base de datos que corresponden a los resultados de la API.
@@ -111,7 +111,7 @@ class SearchController extends Controller
                     $result['user_list_item_id'] = $inCollectionItem->pivot->id;
                 }
             }
-            // --- FIN Lógica para marcar ítems en la colección ---
+            
         }
 
         if ($request->ajax()) {
