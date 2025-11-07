@@ -152,11 +152,11 @@ export default function SearchPage() {
                         className="w-5 h-5"
                     >
                         <path
-                            // --- (Corrección de SVG) ---
-                            strokeLineCap="round"
-                            strokeLineJoin="round"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
                             d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z"
-                        />
+                            />
+
                     </svg>
                     Buscar
                 </button>
@@ -183,7 +183,7 @@ export default function SearchPage() {
                                 src={item.cover_image_url}
                                 alt={item.title}
                                 // --- CORRECCIÓN DE TAMAÑO ---
-                                className="w-full h-44 object-cover" // Reducido a h-40
+                                className="w-full h-44 object-cover" 
                             />
                             <div className="p-3">
                                 <h3
