@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ReactDOM from "react-dom/client";
 import toast, { Toaster } from "react-hot-toast";
+import SearchIcon from "./icons/SearchIcon";
+import AddIcon from "./icons/AddIcon";
+import RemoveIcon from "./icons/RemoveIcon";
+
+
+
 
 export default function SearchPage() {
     const [query, setQuery] = useState("");
@@ -135,31 +141,17 @@ export default function SearchPage() {
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={`Buscar ${type === "anime" ? "animes" : "videojuegos"}...`}
-                    // --- CORRECCIÓN DE COLOR ---
-                    // Forzamos el texto a ser oscuro (text-gray-900)
+                    
                     className="flex-1 px-4 py-3 rounded-lg bg-white border border-slate-600 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none"
                 />
                 <button
                     onClick={handleSearch}
-                    className="px-4 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition text-white font-semibold flex items-center justify-center gap-2"
+                    className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold text-sm"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-5 h-5"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z"
-                            />
-
-                    </svg>
+                    <SearchIcon className="w-6 h-6" strokeWidth={2} />
                     Buscar
                 </button>
+
             </div>
 
             {/* Texto informativo */}
@@ -199,14 +191,16 @@ export default function SearchPage() {
                                         onClick={() => removeFromCollection(item)}
                                         className="w-full bg-red-600 hover:bg-red-700 text-white py-1.5 rounded-md font-semibold text-xs flex items-center justify-center gap-1 transition"
                                     >
-                                        ❌ Quitar
+                                        <RemoveIcon className="w-4 h-4" /> Eliminar de Mi Colección
+
                                     </button>
                                 ) : (
                                     <button
                                         onClick={() => addToCollection(item)}
                                         className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-1.5 rounded-md font-semibold text-xs flex items-center justify-center gap-1 transition"
                                     >
-                                        ➕ Añadir
+                                        <AddIcon className="w-4 h-4" /> Añadir a Mi Colección
+
                                     </button>
                                 )}
                             </div>
