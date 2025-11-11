@@ -55,7 +55,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Auriculares Gaming HyperX Cloud II',
             'price' => 79.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/71d-H4vKj9L._AC_SL1500_.jpg',
+            'image_url' => 'https://row.hyperx.com/cdn/shop/files/hyperx_cloud_ii_red_1_main.jpg?v=1737720332',
             'affiliate_url' => '#',
             'category' => 'Accesorios',
         ]);
@@ -63,7 +63,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Mando Xbox Series X|S - Carbon Black',
             'price' => 59.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/61G5yL-s-OL._AC_SL1500_.jpg',
+            'image_url' => 'https://m.media-amazon.com/images/I/71jje-vi17L._AC_UF894,1000_QL80_.jpg',
             'affiliate_url' => '#',
             'category' => 'Accesorios',
         ]);
@@ -71,7 +71,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Figura Luffy Gear 5',
             'price' => 69.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/61qS02q70ZL._AC_SL1500_.jpg',
+            'image_url' => 'https://sunnystore.es/cdn/shop/files/megahouse-225118-one-piece-monkey-d-luffy-gear-5-p-o-p-2413cm.jpg?v=1723222457',
             'affiliate_url' => '#',
             'category' => 'Figuras',
         ]);
@@ -79,7 +79,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Mochila Pokémon Pikachu',
             'price' => 29.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/61-mS4m1YdL._AC_SL1500_.jpg',
+            'image_url' => 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRsAhKXge4zCzeOzL1KD8rTHl7yP0c4JRhTDYRrBgdOXYCccqP2xhzYUXhFL1f8wrJBsAexG63qJorDGX3rXj4vJ-gaovV-DYwf6H3YXQNtYt3WeHCFsOHMt-AR7w&usqp=CAc',
             'affiliate_url' => '#',
             'category' => 'Merchandising',
         ]);
@@ -87,7 +87,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Taza The Legend of Zelda: Triforce',
             'price' => 14.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/61k2Xp3eFjL._AC_SL1500_.jpg',
+            'image_url' => 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSHyoheTaIdIq0ywEuAZaRWQPMiFjTGtnm553UrTSLtzKWagbp_6XFWWtCLKn9NNXsOETWDhLQzzJol8EUC5-nckDKHdDwKeIU8mnh90d9Y5yS-L0vKL_9te2rMZV7qRttmVYgvUAY&usqp=CAc',
             'affiliate_url' => '#',
             'category' => 'Merchandising',
         ]);
@@ -95,7 +95,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Funko Pop! Geralt of Rivia',
             'price' => 12.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/61Nl-5tP1XL._AC_SL1500_.jpg',
+            'image_url' => 'https://m.media-amazon.com/images/I/61KnYZ0KokL.jpg',
             'affiliate_url' => '#',
             'category' => 'Figuras',
         ]);
@@ -103,7 +103,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Camiseta Cyberpunk 2077 - Samurai',
             'price' => 24.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/61D79f22NUL._AC_SL1500_.jpg',
+            'image_url' => 'https://www.emp-online.es/dw/image/v2/BBQV_PRD/on/demandware.static/-/Sites-master-emp/default/dwf438ca79/images/5/8/5/2/585254a.jpg?sfrm=png',
             'affiliate_url' => '#',
             'category' => 'Ropa',
         ]);
@@ -111,7 +111,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Alfombrilla de Ratón Grande - Mapa de Hyrule',
             'price' => 19.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/710gG-QeMmL._AC_SL1500_.jpg',
+            'image_url' => 'https://m.media-amazon.com/images/I/71xuSR0nYeL._AC_UF894,1000_QL80_.jpg',
             'affiliate_url' => '#',
             'category' => 'Accesorios',
         ]);
@@ -119,7 +119,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Libro de Arte de Elden Ring Vol. 1',
             'price' => 35.00,
-            'image_url' => 'https://m.media-amazon.com/images/I/81f-g8j-yCL._AC_SL1500_.jpg',
+            'image_url' => 'https://m.media-amazon.com/images/I/71xxdi7pifL.jpg_BO30,255,255,255_UF900,850_SR1910,1000,0,C_PIRIOFOUR-medium,BottomLeft,30,-20_ZJPHNwYW4gZm9yZWdyb3VuZD0iIzU2NTk1OSIgZm9udD0iQW1hem9uRW1iZXIgNTAiID4yODwvc3Bhbj4=,500,900,420,420,0,0_QL100_.jpg',
             'affiliate_url' => '#',
             'category' => 'Libros',
         ]);
@@ -127,7 +127,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Funda Nintendo Switch - Animal Crossing',
             'price' => 19.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/71Y8K9X3YqL._AC_SL1500_.jpg',
+            'image_url' => 'https://kareenaelectronics.com/10939-large_default/game-traveler-deluxe-travel-case-funda-switch-animal-crossing-nns39ac.jpg',
             'affiliate_url' => '#',
             'category' => 'Accesorios',
         ]);
@@ -135,7 +135,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Figura Nendoroid Megumin',
             'price' => 75.00,
-            'image_url' => 'https://m.media-amazon.com/images/I/61jC8Vq2SUL._AC_SL1500_.jpg',
+            'image_url' => 'https://m.media-amazon.com/images/I/51QiAFY4j5L._AC_UF894,1000_QL80_.jpg',
             'affiliate_url' => '#',
             'category' => 'Figuras',
         ]);
@@ -143,7 +143,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Póster One Piece - Wanted Luffy',
             'price' => 9.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/71P4zY50j2L._AC_SL1500_.jpg',
+            'image_url' => 'https://m.media-amazon.com/images/I/71KcjFwSJTL._AC_UF894,1000_QL80_.jpg',
             'affiliate_url' => '#',
             'category' => 'Merchandising',
         ]);
@@ -151,7 +151,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Camiseta Gaming - "Eat Sleep Game Repeat"',
             'price' => 19.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/61H4L-u-YEL._AC_UL1500_.jpg',
+            'image_url' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuoWcu9jRIqvybB_SJekMmeymhMGKqAB4Mig&s',
             'affiliate_url' => '#',
             'category' => 'Ropa',
         ]);
@@ -159,7 +159,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Llavero de Metal - Espada Maestra',
             'price' => 7.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/51b7Z9Q3sYL._AC_SL1000_.jpg',
+            'image_url' => 'https://m.media-amazon.com/images/I/51cqzYMnkRL._AC_UY1000_.jpg',
             'affiliate_url' => '#',
             'category' => 'Accesorios',
         ]);
@@ -167,7 +167,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Mochila Jujutsu Kaisen',
             'price' => 34.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/71b2gL0q8QL._AC_SL1500_.jpg',
+            'image_url' => 'https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTxGRyHQkX0CTE7wScz9jHaI6MnnT3CQaJJ9kyF_7bRExHQZLddgGboNpljJCkzNHDUV8k_8zVHez5QbCNgBX1__HWmpRNkZipUbdmyV5Xt63lpNAjPK4C5lVyOCA&usqp=CAc',
             'affiliate_url' => '#',
             'category' => 'Merchandising',
         ]);
@@ -175,7 +175,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Reloj de Pared - Pac-Man',
             'price' => 25.00,
-            'image_url' => 'https://m.media-amazon.com/images/I/71m4e9lP0mL._AC_SL1500_.jpg',
+            'image_url' => 'https://images-na.ssl-images-amazon.com/images/I/71k5ZzUY0LL._AC_UL495_SR435,495_.jpg',
             'affiliate_url' => '#',
             'category' => 'Decoración',
         ]);
@@ -183,7 +183,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Puzzle 1000 Piezas - Witcher 3',
             'price' => 22.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/81B4W1B9kSL._AC_SL1500_.jpg',
+            'image_url' => 'https://www.somosjuegos.com/wp-content/uploads/2025/04/The-Witcher-Puzzle-1000-3.jpg',
             'affiliate_url' => '#',
             'category' => 'Juegos de Mesa',
         ]);
@@ -191,7 +191,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Gorra con Logo de PlayStation',
             'price' => 16.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/71N7M2Y4xUL._AC_SL1500_.jpg',
+            'image_url' => 'https://sw6.elbenwald.de/media/c8/c1/47/1629829124/E1045906_1.jpg',
             'affiliate_url' => '#',
             'category' => 'Ropa',
         ]);
@@ -199,7 +199,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Cojín Demon Slayer - Nezuko',
             'price' => 20.00,
-            'image_url' => 'https://m.media-amazon.com/images/I/61R+g4Q9YxL._AC_SL1500_.jpg',
+            'image_url' => 'https://m.media-amazon.com/images/I/719losJp+rL.jpg',
             'affiliate_url' => '#',
             'category' => 'Decoración',
         ]);
@@ -207,7 +207,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Figura Pop! Pokémon - Bulbasaur',
             'price' => 15.00,
-            'image_url' => 'https://m.media-amazon.com/images/I/611D3lD6gDL._AC_SL1500_.jpg',
+            'image_url' => 'https://m.media-amazon.com/images/I/61vl9iIVNoL.jpg',
             'affiliate_url' => '#',
             'category' => 'Figuras',
         ]);
@@ -215,7 +215,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Manga My Hero Academia Vol. 1',
             'price' => 8.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/81xUe5-rCmL._AC_SL1500_.jpg',
+            'image_url' => 'https://m.media-amazon.com/images/I/61s2nF5TMVL.jpg',
             'affiliate_url' => '#',
             'category' => 'Libros',
         ]);
@@ -223,7 +223,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Botella de Agua - Super Mario',
             'price' => 11.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/71+0j7R9p9L._AC_SL1500_.jpg',
+            'image_url' => 'https://laboutiquedestoons.com/44781-thickbox_default/super-mario-family-botella-de-agua-de-aluminio-600-ml.jpg',
             'affiliate_url' => '#',
             'category' => 'Merchandising',
         ]);
@@ -231,7 +231,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Figura Nendoroid Eren Yeager',
             'price' => 85.00,
-            'image_url' => 'https://m.media-amazon.com/images/I/618x7C-9tAL._AC_SL1500_.jpg',
+            'image_url' => 'https://m.media-amazon.com/images/I/61vok08gXFL.jpg',
             'affiliate_url' => '#',
             'category' => 'Figuras',
         ]);
@@ -239,7 +239,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Puzzle 500 Piezas - Dragon Ball Z',
             'price' => 18.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/81w+9y0p7AL._AC_SL1500_.jpg',
+            'image_url' => 'https://m.media-amazon.com/images/I/81pnAzCs60L.jpg',
             'affiliate_url' => '#',
             'category' => 'Juegos de Mesa',
         ]);
@@ -247,7 +247,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Manta Polar - Spider-Man',
             'price' => 29.99,
-            'image_url' => 'https://m.media-amazon.com/images/I/71x4xS+u8GL._AC_SL1500_.jpg',
+            'image_url' => 'https://m.media-amazon.com/images/I/61Eo4EYxJGL._AC_UF894,1000_QL80_.jpg',
             'affiliate_url' => '#',
             'category' => 'Hogar',
         ]);
@@ -255,7 +255,7 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Taza Genshin Impact - Paimon',
             'price' => 16.00,
-            'image_url' => 'https://m.media-amazon.com/images/I/61s0B4pL-zL._AC_SL1500_.jpg',
+            'image_url' => 'https://m.media-amazon.com/images/I/61BJ5SDin8L._AC_UF350,350_QL80_.jpg',
             'affiliate_url' => '#',
             'category' => 'Merchandising',
         ]);

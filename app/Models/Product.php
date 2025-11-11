@@ -10,6 +10,9 @@ class Product extends Model
 
     public function usersInWishlist()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'product_user')
+                    ->withPivot('quantity')
+                    ->withTimestamps();
     }
 }
+

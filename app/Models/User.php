@@ -68,7 +68,7 @@ class User extends Authenticatable
         return $this->hasMany(Post::class);
     }
 
-    public function activities() // <--- 2. AÑADE ESTA FUNCIÓN COMPLETA
+    public function activities() 
     {
         return $this->hasMany(Activity::class);
     }
@@ -80,8 +80,11 @@ class User extends Authenticatable
 
     public function wishlistProducts()
     {
-        return $this->belongsToMany(Product::class)->withPivot('quantity');
+        return $this->belongsToMany(Product::class, 'product_user')
+                    ->withPivot('quantity')
+                    ->withTimestamps();
     }
+
 
     //usuarios que me siguen
     public function followers()
@@ -105,4 +108,10 @@ class User extends Authenticatable
     {
         return 'username';
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
 }
