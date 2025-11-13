@@ -69,7 +69,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/notificaciones', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
     Route::get('/checkout/summary', [WishlistController::class, 'checkoutSummary'])->name('checkout.summary');
-    Route::post('/checkout/process', [WishlistController::class, 'processCheckout'])->name('checkout.process'); // ¡Nueva ruta para procesar la compra!
+    Route::post('/checkout/process', [WishlistController::class, 'processCheckout'])->name('checkout.process');
     Route::get('/checkout/confirmation/{order}', [WishlistController::class, 'orderConfirmation'])->name('checkout.confirmation');
     Route::get('/checkout/invoice/{order}/pdf', [WishlistController::class, 'downloadInvoicePdf'])->name('checkout.invoice.pdf');
 });

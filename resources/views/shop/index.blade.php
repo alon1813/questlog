@@ -17,12 +17,6 @@
                             <h4 class="font-bold text-white flex-grow">{{ $product->name }}</h4>
                             <div class="text-xl font-bold my-2">{{ $product->price }}€</div>
                             
-                            {{-- <form action="{{ route('wishlist.add', $product) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="w-full mt-2 px-4 py-2 bg-[var(--text-primary)] text-white font-semibold text-sm rounded-lg uppercase hover:opacity-80">
-                                    Añadir a Deseos
-                                </button>
-                            </form> --}}
                             <livewire:wishlist-button :product="$product" :key="$product->id" />
                         </div>
                     </div>

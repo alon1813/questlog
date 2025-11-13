@@ -12,18 +12,6 @@ class WishlistButton extends Component
     public Product $product;
     public bool $isInWishlist;
 
-    // public function mount()
-    // {
-    //     if (Auth::check()) {
-    //         /** @var \App\Models\User $user */
-    //         $user = Auth::user();
-    //         // Comprueba si el producto ya está en la lista de deseos del usuario
-    //         $this->isInWishlist = $user->wishlistProducts()->where('product_id', $this->product->id)->exists();
-    //     } else {
-    //         $this->isInWishlist = false;
-    //     }
-    // }
-
     public function addToWishlist()
     {
         if (!Auth::check()) {
@@ -35,8 +23,6 @@ class WishlistButton extends Component
         $user = Auth::user();
 
         $existingProduct = $user->wishlistProducts()->where('product_id', $this->product->id)->first();
-
-
 
         if ($existingProduct) {
             // Si ya está, lo quita
