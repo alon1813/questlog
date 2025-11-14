@@ -76,12 +76,15 @@
                         </x-dropdown-link>
 
                         <x-dropdown-link :href="route('wishlist.index')">
-                            Mi Lista de Deseos
+                            Carrito
                         </x-dropdown-link>
 
                         @can('manage-posts')
                             <x-dropdown-link :href="route('posts.admin.index')">Gestionar Noticias</x-dropdown-link>
                             <x-dropdown-link :href="route('admin.comments.index')">Moderar Comentarios</x-dropdown-link> {{-- <-- AÑADE ESTE --}}
+                            <x-dropdown-link :href="route('admin.users.index')">
+                                Gestión de Usuarios
+                            </x-dropdown-link>
                         @endcan
 
                         <!-- Authentication -->

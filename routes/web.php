@@ -16,7 +16,8 @@ use App\Models\Activity;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\LandingPageController; 
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ItemController; 
+use App\Http\Controllers\ItemController;
+use App\Livewire\Admin\UserManagement;
 
 
 Route::get('/', function () {
@@ -44,6 +45,8 @@ Route::middleware(['auth', 'can:manage-posts'])->group(function () {
     Route::get('/admin/comentarios', [AdminCommentController::class, 'index'])->name('admin.comments.index');
     Route::patch('/admin/comentarios/{comment}/status', [AdminCommentController::class, 'updateStatus'])->name('admin.comments.updateStatus');
     Route::delete('/admin/comentarios{comment}', [AdminCommentController::class, 'destroy'])->name('admin.comments.destroy');
+    Route::get('/admin/users', UserManagement::class)->name('admin.users.index');
+
 });
 
 Route::middleware('auth')->group(function () {
