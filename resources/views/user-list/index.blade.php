@@ -25,21 +25,19 @@
             {{-- Sección de Filtros y Cambiador de Vista (Cuadrícula/Lista) --}}
             <div class="flex flex-wrap justify-between items-center bg-[var(--bg-secondary)] p-4 rounded-lg mb-8 text-[var(--text-secondary)]">
                 <div class="filters flex items-center space-x-2">
-                    {{-- Los filtros por estado --}}
+                    
                     <a href="{{ route('user-list.index') }}" class="px-3 py-1 text-sm rounded-md {{ request('status') === null ? 'bg-[var(--text-primary)] text-white' : 'bg-[var(--bg-tertiary)] hover:bg-[var(--bg-quaternary)]' }}">Todos</a>
                     <a href="{{ route('user-list.index', ['status' => 'Jugando']) }}" class="px-3 py-1 text-sm rounded-md {{ request('status') === 'Jugando' ? 'bg-[var(--text-primary)] text-white' : 'bg-[var(--bg-tertiary)] hover:bg-[var(--bg-quaternary)]' }}">En Progreso</a>
                     <a href="{{ route('user-list.index', ['status' => 'Completado']) }}" class="px-3 py-1 text-sm rounded-md {{ request('status') === 'Completado' ? 'bg-[var(--text-primary)] text-white' : 'bg-[var(--bg-tertiary)] hover:bg-[var(--bg-quaternary)]' }}">Completados</a>
                     <a href="{{ route('user-list.index', ['status' => 'Pendiente']) }}" class="px-3 py-1 text-sm rounded-md {{ request('status') === 'Pendiente' ? 'bg-[var(--text-primary)] text-white' : 'bg-[var(--bg-tertiary)] hover:bg-[var(--bg-quaternary)]' }}">Pendientes</a>
+                    <a href="{{ route('user-list.index', ['status' => 'Abandonado']) }}" class="px-3 py-1 text-sm rounded-md {{ request('status') === 'Abandonado' ? 'bg-[var(--text-primary)] text-white' : 'bg-[var(--bg-tertiary)] hover:bg-[var(--bg-quaternary)]' }}">Abandonados</a>
                 </div>
                 <div class="view-toggle flex items-center space-x-2 mt-4 sm:mt-0">
-                    {{-- Botones para cambiar la vista --}}
+                    
                     <button @click="view = 'grid'" :class="{ 'bg-[var(--text-primary)] text-white': view === 'grid', 'bg-[var(--bg-tertiary)]': view !== 'grid' }" class="px-3 py-1 text-sm rounded-md hover:bg-[var(--bg-quaternary)] transition-colors">Cuadrícula</button>
                     <button @click="view = 'list'" :class="{ 'bg-[var(--text-primary)] text-white': view === 'list', 'bg-[var(--bg-tertiary)]': view !== 'list' }" class="px-3 py-1 text-sm rounded-md hover:bg-[var(--bg-quaternary)] transition-colors">Lista</button>
                 </div>
             </div>
-            {{-- Fin Sección de Filtros y Cambiador de Vista --}}
-
-            {{-- Vista de CUADRÍCULA (Grid View) --}}
             <div x-show="view === 'grid'" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-4">
                 @forelse ($items as $item)
                     <div class="bg-[var(--bg-secondary)] rounded-lg overflow-hidden transform hover:scale-105 transition-transform flex flex-col relative group">
