@@ -33,6 +33,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class, // <-- Apunta a Illuminate
             \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class, // <-- Apunta a Illuminate
             \Illuminate\Routing\Middleware\SubstituteBindings::class, // <-- Apunta a Illuminate
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ],
 
         'api' => [

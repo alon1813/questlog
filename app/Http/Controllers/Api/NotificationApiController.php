@@ -16,10 +16,10 @@ class NotificationApiController extends Controller
             'notifications' => $user->notifications->take(20)->map(function ($n) {
                 return [
                     'id' => $n->id,
-                    'type' => class_basename($n->type),
-                    'data' => $n->data,
-                    'read_at' => $n->read_at,
-                    'created_at' => $n->created_at->diffForHumans()
+                    'type' => class_basename($n->type), 
+                    'data' => $n->data, 
+                    'read_at' => $n->read_at, 
+                    'created_at' => $n->created_at->diffForHumans() 
                 ];
             }),
         ]);
@@ -27,10 +27,12 @@ class NotificationApiController extends Controller
 
     public function markAsRead(Request $request)
     {
-        $request->user()->unreadNotifications->markAsRead();
+        $user = $request->user();
+        $user->unreadNotifications->markAsRead(); 
 
         return response()->json([
-            'success' => true
+            'success' => true,
+            'message' => 'Notificaciones marcadas como leídas.' 
         ]);
     }
 }

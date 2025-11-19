@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminCommentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserListItemController;
 use App\Http\Controllers\PostController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\ShopController;
 use App\Models\Activity;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Api\NotificationApiController;
 use App\Http\Controllers\LandingPageController; 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
@@ -50,6 +52,7 @@ Route::middleware(['auth', 'can:manage-posts'])->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::get('/search', [SearchController::class, 'index'])->name('search.index');
     Route::get('/posts/crear', [PostController::class, 'create'])->name('posts.create');
@@ -70,6 +73,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/usuarios/{user}/follow', [FollowController::class, 'follow'])->name('users.follow');
     Route::delete('/usuarios/{user}/unfollow', [FollowController::class, 'unfollow'])->name('users.unfollow');
     Route::get('/notificaciones', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/internal/notifications', [NotificationApiController::class, 'index'])
+        ->name('internal.notifications.index');
+    Route::post('/internal/notifications/mark-as-read', [NotificationApiController::class, 'markAsRead'])
+        ->name('internal.notifications.markAsRead');
     Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
     Route::get('/checkout/summary', [WishlistController::class, 'checkoutSummary'])->name('checkout.summary');
     Route::post('/checkout/process', [WishlistController::class, 'processCheckout'])->name('checkout.process');

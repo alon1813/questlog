@@ -1,4 +1,4 @@
-<div>{{-- Asumiendo que quieres que use el layout de admin/app --}}
+<div>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Gestión de Usuarios') }}
@@ -12,6 +12,12 @@
                 @if (session()->has('success'))
                     <div class="mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-400 text-green-700 dark:text-green-200 rounded" role="alert">
                         {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session()->has('error'))
+                    <div class="mb-4 p-4 bg-red-100 dark:bg-red-900 border border-red-400 text-red-700 dark:text-red-200 rounded" role="alert">
+                        {{ session('error') }}
                     </div>
                 @endif
 
@@ -34,28 +40,43 @@
                         </thead>
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             @forelse ($users as $user)
-                                <tr wire:key="{{ $user->id }}">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{{ $user->name }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $user->email }}</td>
+                                <tr wire:key="user-{{ $user->id }}">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
+                                        {{ $user->name }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                        {{ $user->email }}
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        {{-- Selector de Rol --}}
-                                        <select wire:change="changeRole({{ $user->id }}, $event.target.value)" class="dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm">
+                                        {{-- ✅ CORREGIDO: Añadido wire:key y usando $user->id --}}
+                                        <select 
+                                            wire:key="role-select-{{ $user->id }}"
+                                            wire:change="changeRole({{ $user->id }}, $event.target.value)" 
+                                            class="dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm border-gray-300 dark:border-gray-700">
                                             @foreach($roles as $role)
-                                                <option value="{{ $role }}" {{ $user->role == $role ? 'selected' : '' }}>{{ ucfirst($role) }}</option>
+                                                <option value="{{ $role }}" {{ $user->role == $role ? 'selected' : '' }}>
+                                                    {{ ucfirst($role) }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        {{-- Selector de Estado (Activo, Advertido, Suspendido) --}}
-                                        <select wire:change="changeStatus({{ $user->id }}, $event.target.value)" class="dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm">
+                                        {{-- ✅ CORREGIDO: Añadido wire:key y usando $user->id --}}
+                                        <select 
+                                            wire:key="status-select-{{ $user->id }}"
+                                            wire:change="changeStatus({{ $user->id }}, $event.target.value)" 
+                                            class="dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm border-gray-300 dark:border-gray-700">
                                             @foreach($statuses as $status)
-                                                <option value="{{ $status }}" {{ $user->status == $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
+                                                <option value="{{ $status }}" {{ $user->status == $status ? 'selected' : '' }}>
+                                                    {{ ucfirst($status) }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        {{-- Botón de Eliminar (con confirmación JS) --}}
+                                        {{-- ✅ CORREGIDO: Usando $user->id --}}
                                         <button 
+                                            wire:key="delete-btn-{{ $user->id }}"
                                             wire:click="deleteUser({{ $user->id }})" 
                                             wire:confirm="¿Estás seguro de que quieres eliminar a {{ $user->name }}? Esta acción es irreversible."
                                             class="text-red-600 hover:text-red-900 dark:hover:text-red-400">

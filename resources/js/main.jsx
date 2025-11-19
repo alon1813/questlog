@@ -2,18 +2,25 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Toaster } from "react-hot-toast";
 import "../css/app.css";
-import "./bootstrap"; // Axios + CSRF configurado
+
 import SearchPage from "./components/SearchPage.jsx";
+import NotificationsBell from "./components/NotificationBell.jsx";
+
 
 // 🔧 Renderizador global de React
 document.addEventListener("DOMContentLoaded", () => {
     const rootElement = document.getElementById("react-search");
+    const bell = document.getElementById("react-notifications");
+    if (bell) {
+        const root = ReactDOM.createRoot(bell);
+        root.render(<NotificationsBell />);
+    }
 
     if (rootElement) {
         const root = ReactDOM.createRoot(rootElement);
         root.render(
             <React.StrictMode>
-                {/* Toaster global: aparecerá en todas las vistas */}
+                {}
                 <Toaster
                     position="top-right"
                     toastOptions={{

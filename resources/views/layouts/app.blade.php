@@ -19,8 +19,9 @@
     <link rel="shortcut icon" href="{{ asset('favicons/source/favicon.ico') }}" />
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicons/source/apple-touch-icon.png') }}" />
     <link rel="manifest" href="{{ asset('favicons/source/site.webmanifest') }}" />
-    
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @viteReactRefresh
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/main.jsx'])
     @livewireStyles
     @stack('styles')
 
