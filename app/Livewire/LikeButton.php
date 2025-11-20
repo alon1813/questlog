@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Pivots\ItemUser;
+use App\Notifications\NewLikeNotification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -37,16 +38,21 @@ class LikeButton extends Component
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // Evitar auto-like (si la regla de negocio lo requiere)
+        
         if ($this->itemUser->user_id === $user->id) {
             return;
         }
 
-        // Alternar el estado de "like"
+        
         if ($this->isLikedByCurrentUser) {
             $this->itemUser->likes()->where('user_id', $user->id)->delete();
         }else{
             $this->itemUser->likes()->create(['user_id' => $user->id]);
+
+            $owner = $this->itemUser->user;
+            if($owner->id !== $user->id){
+                $owner->notify(new NewLikeNotification($user, $this->itemUser));
+            }
         }
 
         $this->updateLikeStatus();

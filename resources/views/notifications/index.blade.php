@@ -4,6 +4,7 @@
             <h1 class="text-3xl font-bold mb-6">Notificaciones</h1>
             <div class="space-y-3">
                 @forelse ($notifications as $notification)
+                
                     <div @class([
                         'flex items-center gap-4 p-4 rounded-lg',
                         'bg-[var(--bg-tertiary)] border-l-4 border-[var(--text-primary)]' => !$notification->read_at,

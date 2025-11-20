@@ -9,6 +9,9 @@ class NotificationApiController extends Controller
 {
     public function index(Request $request)
     {
+        if (!$request->user()) {
+            return response()->json(['error' => 'No autenticado'], 401);
+        }
         $user = $request->user();
 
         return response()->json([

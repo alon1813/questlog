@@ -7,8 +7,6 @@ import AddIcon from "./icons/AddIcon";
 import RemoveIcon from "./icons/RemoveIcon";
 
 
-
-
 export default function SearchPage() {
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
@@ -30,7 +28,7 @@ export default function SearchPage() {
             .finally(() => setLoading(false));
     };
 
-    // --- Búsqueda automática al escribir ---
+
     useEffect(() => {
         if (query.length < 2) {
             setResults([]);
@@ -42,7 +40,7 @@ export default function SearchPage() {
         return () => clearTimeout(delayDebounceFn);
     }, [query, type]);
 
-    // --- Enter ejecuta la búsqueda ---
+
     const handleKeyDown = (e) => {
         if (e.key === "Enter") handleSearch();
     };
@@ -116,7 +114,6 @@ export default function SearchPage() {
                 }}
             />
 
-            {/* Selector arriba */}
             <div className="flex gap-3 mb-4">
                 {["anime", "game"].map((t) => (
                     <button
@@ -133,7 +130,6 @@ export default function SearchPage() {
                 ))}
             </div>
 
-            {/* Barra de búsqueda */}
             <div className="flex w-full max-w-2xl mb-6 gap-2">
                 <input
                     type="text"
@@ -154,14 +150,12 @@ export default function SearchPage() {
 
             </div>
 
-            {/* Texto informativo */}
             {query && (
                 <p className="text-gray-400 text-sm mb-6">
                     Mostrando resultados para: <span className="text-indigo-400">“{query}”</span>
                 </p>
             )}
 
-            {/* Resultados */}
             {loading ? (
                 <p className="text-gray-400 text-center py-10 text-lg">Buscando...</p>
             ) : results.length > 0 ? (
@@ -174,7 +168,7 @@ export default function SearchPage() {
                             <img
                                 src={item.cover_image_url}
                                 alt={item.title}
-                                // --- CORRECCIÓN DE TAMAÑO ---
+                                
                                 className="w-full h-44 object-cover" 
                             />
                             <div className="p-3">
