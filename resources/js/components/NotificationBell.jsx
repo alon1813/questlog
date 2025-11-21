@@ -19,10 +19,11 @@ export default function NotificationsBell() {
 
     const getNotificationLink = (notifications) =>{
         const data = notifications.data;
+        
         switch(notifications.type) {
             case 'NewFollowerNotification':
-                return data.follower_id 
-                ? `/usuarios/${data.follower_id}` 
+                return data.follower_username 
+                ? `/usuarios/${data.follower_username}` 
                 : '/notificaciones';
             
             case 'NewCommentNotification':
@@ -142,9 +143,10 @@ export default function NotificationsBell() {
                                 </div>
                             ) :notifications.length > 0 ? (
                                 notifications.map((n) => (
-                                    <div 
+                                    <a 
                                         key={n.id} 
                                         href={getNotificationLink(n)}
+                                        onClick={() => setShowDropdown(false)} // Opcional: cierra el menú al hacer clic
                                         className={`block px-4 py-3 text-sm border-b dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
                                             !n.read_at ? 'bg-blue-50 dark:bg-gray-900' : ''
                                         }`}
@@ -180,7 +182,7 @@ export default function NotificationsBell() {
                                                 <span className="flex-shrink-0 inline-block w-2 h-2 bg-blue-500 rounded-full mt-2"></span>
                                             )}
                                         </div>
-                                    </div>
+                                    </a>
                                 ))
                             ) : (
                                 <div className="px-4 py-8 text-center">

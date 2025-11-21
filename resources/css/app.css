@@ -13,11 +13,9 @@
     --text-primary: #e94560; /* Color principal (ej. para CTA, títulos) */
     --text-secondary: #dcdcdc; /* Color de texto general */
     --border-color: #533483; /* Color de borde */
-    /* Mantén tus otras variables aquí si tienes más */
+    
 }
 
-/* Base styles - Tailwind's @tailwind base already handles much of this,
-   but we can add custom fonts/colors if they are not picked up by Tailwind classes */
 html { scroll-behavior: smooth; }
 
 body {
@@ -49,15 +47,10 @@ body {
 .view-switcher button.active {
     background-color: var(--text-primary);
 }
-/* Estas clases .view y .view.active son para tu simulador,
-   no son clases de Tailwind y deben mantenerse */
+
 .view { display: none; }
 .view.active { display: block; }
 
-
-/* Clases de Componentes Personalizadas (minimizadas al máximo) */
-/* Solo mantenemos .cta-button aquí si queremos que sea una "component class"
-   que agrupe varios estilos. Si no, podemos usar solo utilidades en el HTML. */
 .cta-button {
     display: inline-block;
     padding: 15px 30px;
@@ -86,26 +79,6 @@ body {
 }
 
 
-/* --- SE HAN ELIMINADO TODAS LAS CLASES DE COMPONENTES DE LANDING/DASHBOARD ---
-   como .container, .navbar, .hero, .features, .feature-card, .logo, .nav-links,
-   .search-bar, .user-nav, .dashboard-layout, .feed-item, .avatar, .review-box,
-   .sidebar, .widget, etc.
-
-   Estas ahora deben ser reemplazadas por CLASES DE UTILIDAD DE TAILWIND directamente
-   en el HTML de tu landing.blade.php.
-*/
-
-/*
-   Si aún necesitas algún ajuste muy específico que no puedes lograr con Tailwind,
-   puedes añadirlo aquí con selectores más específicos, PERO siempre intentando
-   que Tailwind sea la opción principal.
-*/
-
-
-/* Responsive adjustments for elements that still have custom classes */
-/* Aquí solo las reglas para el switcher y los cta-button,
-   el resto de responsividad se manejará con Tailwind en el HTML. */
 @media (max-width: 900px) {
-    /* Ya no necesitaríamos reglas para .dashboard-layout o .features-grid aquí,
-       porque Tailwind manejará eso con grid-cols-1 md:grid-cols-3, etc. */
+    
 }

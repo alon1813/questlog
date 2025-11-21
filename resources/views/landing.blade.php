@@ -3,59 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Landing - QuestLog</title>
+    
     <link rel="icon" type="image/png" href="{{ asset('favicons/source/favicon-96x96.png') }}" sizes="96x96" />
-        <link rel="icon" type="image/svg+xml" href="{{ asset('favicons/source/favicon.svg') }}" />
-        <link rel="shortcut icon" href="{{ asset('favicons/source/favicon.ico') }}" />
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicons/source/apple-touch-icon.png') }}" />
-        <link rel="manifest" href="{{ asset('favicons/source/site.webmanifest') }}" />
-    {{-- Vite se encarga de importar app.css que a su vez importa las fuentes y tus estilos personalizados --}}
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicons/source/favicon.svg') }}" />
+    <link rel="shortcut icon" href="{{ asset('favicons/source/favicon.ico') }}" />
+    
     @vite(['resources/css/app.css', 'resources/js/app.js']) 
-    
-    @stack('styles') 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        .landing-swiper {
+            width: 100%;
+            padding-top: 20px;
+            padding-bottom: 50px;
+            overflow: hidden; 
+        }
+        
+        .landing-slide {
+            background-position: center;
+            background-size: cover;
+            width: 220px; 
+            height: 320px; 
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .landing-slide:hover {
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .landing-slide img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+            color: white;
+        }
+        
+        
+        .swiper-pagination-bullet { background: rgba(255,255,255,0.4) !important; }
+        .swiper-pagination-bullet-active { background: white !important; }
+    </style>
 </head>
-<body class="bg-[var(--bg-primary)] text-[var(--text-secondary)] font-sans">
+
+<body class="bg-gray-900 text-gray-300 font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <header class="flex justify-between items-center py-5 border-b border-[var(--border-color)]">
-            <div class="text-2xl font-extrabold text-white">QuestLog</div>
-            <nav class="hidden md:flex space-x-6">
-                <a href="#features-section" class="font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Características</a>
-                <a href="{{ route('posts.index') }}" class="font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Blog</a>
+        <header class="flex justify-between items-center py-6 border-b border-gray-800">
+            <div class="text-2xl font-black text-white tracking-tighter flex items-center gap-2">
+                QuestLog
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#features" class="font-medium hover:text-white transition">Características</a>
+                <a href="{{ route('posts.index') }}" class="font-medium hover:text-white transition">Blog</a>
             </nav>
             <div class="flex items-center space-x-4">
-                <a href="{{ route('login') }}" class="cta-button cta-button-secondary">Iniciar Sesión</a>
-                <a href="{{ route('register') }}" class="cta-button">Regístrate Gratis</a>
+                <a href="{{ route('login') }}" class="font-medium hover:text-white transition">Entrar</a>
+                <a href="{{ route('register') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-full font-bold transition shadow-lg shadow-indigo-500/30">Registrarse</a>
             </div>
         </header>
 
         <main>
-            <section class="text-center py-20 md:py-32 relative overflow-hidden rounded-xl mt-8" 
-                    style="background-image: linear-gradient(rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.95)), url('https://images.alphacoders.com/133/1330425.png'); background-size: cover; background-position: center;">
-                <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-5 leading-tight">Tu universo de juegos y anime, en un solo lugar.</h1>
-                <p class="text-lg md:text-xl text-[var(--text-secondary)] max-w-2xl mx-auto mb-10">Cataloga, puntúa y comparte todo lo que juegas y ves. Conecta con una comunidad que comparte tu misma pasión.</p>
-                <a href="{{ route('register') }}" class="cta-button text-lg px-8 py-4">Regístrate Gratis</a>
+            
+            <section class="text-center py-20 md:py-32 relative">
+                
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full overflow-hidden -z-10 opacity-30 pointer-events-none">
+                    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+                    <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+                </div>
+
+                <h1 class="text-5xl md:text-7xl font-black text-white mb-6 leading-tight tracking-tight">
+                    Tu colección, <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">tu legado.</span>
+                </h1>
+                <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                    La plataforma definitiva para catalogar tus juegos, animes y series. 
+                    Comparte tu progreso y descubre tu próxima obsesión.
+                </p>
+                <a href="{{ route('register') }}" class="bg-white text-gray-900 px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transition inline-flex items-center gap-2 shadow-xl">
+                    Comenzar Ahora
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                </a>
             </section>
 
-            <section id="features-section" class="py-20 text-center">
-                <h2 class="text-3xl md:text-4xl font-bold mb-10 text-[var(--text-primary)]">Todo lo que necesitas como fan</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
-                    <div class="bg-[var(--bg-secondary)] p-8 rounded-xl shadow-lg border border-[var(--border-color)]">
-                        <svg fill="var(--text-primary)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-6"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM4 4h16v16H4V4zm4 4h8v2H8V8zm0 4h8v2H8v-2zm0 4h5v2H8v-2z"/></svg>
-                        <h3 class="text-xl font-bold text-[var(--text-primary)] mb-3">CATALOGA</h3>
-                        <p class="text-[var(--text-secondary)]">Crea tu biblioteca personal. Nunca olvides un juego completado o un anime visto.</p>
+            {{-- CARRUSEL "HARDCODED" PARA LA LANDING --}}
+            <section class="py-10 border-y border-gray-800 bg-gray-800/30 backdrop-blur-sm mb-24">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-2">Tendencias de la Comunidad</h2>
+                    <p class="text-sm text-gray-400">Lo que se está jugando y viendo esta semana</p>
+                </div>
+
+                <div class="swiper landing-swiper">
+                    <div class="swiper-wrapper">
+    {{-- Repetimos el bucle 3 veces para asegurar que el loop infinito nunca falle --}}
+    @for ($i = 0; $i < 3; $i++) 
+        @foreach ($popularItems as $item)
+            <div class="swiper-slide landing-slide">
+                <a href="{{ $item->link ?? '#' }}" class="block w-full h-full relative">
+                    <img src="{{ $item->image_url }}" alt="{{ $item->title }}">
+                    <div class="slide-overlay">
+                        <h4 class="text-base font-bold leading-tight">{{ $item->title }}</h4>
+                        <span class="text-xs uppercase tracking-wider text-indigo-300">{{ $item->type }}</span>
                     </div>
-                    <div class="bg-[var(--bg-secondary)] p-8 rounded-xl shadow-lg border border-[var(--border-color)]">
-                        <svg fill="var(--text-primary)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-6"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                        <h3 class="text-xl font-bold text-[var(--text-primary)] mb-3">CONECTA</h3>
-                        <p class="text-[var(--text-secondary)]">Sigue a tus amigos, descubre qué están jugando y comparte tus opiniones.</p>
+                </a>
+            </div>
+        @endforeach
+    @endfor
+</div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </section>
+
+            {{-- CARACTERÍSTICAS --}}
+            <section id="features" class="grid md:grid-cols-3 gap-8 text-center pb-24">
+                <div class="p-8 bg-gray-800/50 rounded-2xl border border-gray-700 hover:border-indigo-500/50 transition group">
+                    <div class="w-16 h-16 bg-indigo-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition">
+                        <svg class="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
                     </div>
-                    <div class="bg-[var(--bg-secondary)] p-8 rounded-xl shadow-lg border border-[var(--border-color)]">
-                        <svg fill="var(--text-primary)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-6"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                        <h3 class="text-xl font-bold text-[var(--text-primary)] mb-3">DESCUBRE</h3>
-                        <p class="text-[var(--text-secondary)]">Encuentra tu próxima obsesión basándote en los gustos de la comunidad.</p>
+                    <h3 class="text-xl font-bold text-white mb-3">Biblioteca Unificada</h3>
+                    <p class="text-gray-400 leading-relaxed">Olvídate de las hojas de cálculo. Ten todos tus juegos, animes y series en un solo perfil elegante.</p>
+                </div>
+                <div class="p-8 bg-gray-800/50 rounded-2xl border border-gray-700 hover:border-purple-500/50 transition group">
+                    <div class="w-16 h-16 bg-purple-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition">
+                        <svg class="w-8 h-8 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Comunidad Activa</h3>
+                    <p class="text-gray-400 leading-relaxed">Sigue a tus amigos, comenta sus progresos y compara vuestros gustos en tiempo real.</p>
+                </div>
+                <div class="p-8 bg-gray-800/50 rounded-2xl border border-gray-700 hover:border-pink-500/50 transition group">
+                    <div class="w-16 h-16 bg-pink-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition">
+                        <svg class="w-8 h-8 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Descubrimiento</h3>
+                    <p class="text-gray-400 leading-relaxed">¿No sabes qué jugar? Nuestro algoritmo te sugiere joyas ocultas basadas en lo que ya te gusta.</p>
                 </div>
             </section>
 
@@ -96,14 +190,44 @@
                 </section>
             @endguest
 
-            <section class="py-20 text-center">
-                <h2 class="text-3xl md:text-5xl font-extrabold mb-8 text-white">¿Listo para empezar?</h2>
-                <a href="{{ route('register') }}" class="cta-button text-xl px-10 py-5">Empieza tu Aventura - Regístrate Ahora</a>
+            {{-- FOOTER CALL TO ACTION --}}
+            <section class="py-20 text-center border-t border-gray-800">
+                <h2 class="text-3xl md:text-4xl font-extrabold mb-8 text-white">¿Listo para empezar tu aventura?</h2>
+                <a href="{{ route('register') }}" class="cta-button text-xl px-12 py-5 bg-white text-gray-900 rounded-full font-bold hover:bg-gray-200 transition">Únete Gratis</a>
             </section>
         </main>
-    </div> {{-- Fin del contenedor global de la landing --}}
-    
+    </div>
+
+    {{-- SCRIPT ESPECÍFICO PARA LA LANDING --}}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new Swiper('.landing-swiper', {
+                effect: 'coverflow',
+                grabCursor: true,
+                centeredSlides: true,
+                slidesPerView: 'auto', 
+                initialSlide: 2,       
+                coverflowEffect: {
+                    rotate: 0,
+                    stretch: 0,
+                    depth: 150,        
+                    modifier: 2.5,
+                    slideShadows: true,
+                },
+                loop: true,
+                autoplay: {
+                    delay: 2500,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                }
+            });
+        });
+    </script>
+
     @stack('scripts')
-    
 </body>
 </html>
