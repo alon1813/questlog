@@ -8,8 +8,7 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
     public function index(){
-        // Obtenemos todos los posts, con la información de su autor,
-        // ordenados del más nuevo al más antiguo, y los paginamos.
+
         $posts = Post::with('user')->where('status', 'published')->latest()->paginate(9);
         return view('posts.index', ['posts' => $posts]);
     
@@ -17,10 +16,7 @@ class PostController extends Controller
     
     public function show(Post $post)
 {
-    // Precargamos los comentarios Y, para cada comentario, su autor (user).
-    //$post->load('comments.user');
 
-    //Ahora solo cargamos los comentarios que son visibles
     $post->load(['comments' =>function($query){
         $query->where('status', 'visible')->latest();
 
@@ -91,13 +87,11 @@ class PostController extends Controller
         return redirect()->route('posts.admin.index')->with('success', 'Post actualizado con éxito.');
     }
 
-    // Eliminar un post
     public function destroy(Post $post){
         $post->delete();
         return redirect()->route('posts.admin.index')->with('success', 'Post eliminado con éxito.');
     }
 
-    // Actualizar el estado de un post (publicado, pendiente, rechazado)
     public function updateStatus(Request $request, Post $post){
         $validated = $request->validate([
             'status' => 'required|in:published,hidden, pending_review',

@@ -17,7 +17,7 @@ class FollowButton extends Component
         /** @var \App\Models\User $currentUser */ 
         $currentUser = Auth::user();
 
-        // Ahora usa la variable con la pista, y el editor no dará error
+        
         $this->isFollowing = $currentUser->isFollowing($this->user);
     }
 

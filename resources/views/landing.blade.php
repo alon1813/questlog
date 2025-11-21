@@ -100,7 +100,6 @@
                 </a>
             </section>
 
-            {{-- CARRUSEL "HARDCODED" PARA LA LANDING --}}
             <section class="py-10 border-y border-gray-800 bg-gray-800/30 backdrop-blur-sm mb-24">
                 <div class="text-center mb-8">
                     <h2 class="text-2xl font-bold text-white mb-2">Tendencias de la Comunidad</h2>
@@ -109,26 +108,24 @@
 
                 <div class="swiper landing-swiper">
                     <div class="swiper-wrapper">
-    {{-- Repetimos el bucle 3 veces para asegurar que el loop infinito nunca falle --}}
-    @for ($i = 0; $i < 3; $i++) 
-        @foreach ($popularItems as $item)
-            <div class="swiper-slide landing-slide">
-                <a href="{{ $item->link ?? '#' }}" class="block w-full h-full relative">
-                    <img src="{{ $item->image_url }}" alt="{{ $item->title }}">
-                    <div class="slide-overlay">
-                        <h4 class="text-base font-bold leading-tight">{{ $item->title }}</h4>
-                        <span class="text-xs uppercase tracking-wider text-indigo-300">{{ $item->type }}</span>
+                        @for ($i = 0; $i < 3; $i++) 
+                            @foreach ($popularItems as $item)
+                                <div class="swiper-slide landing-slide">
+                                    <a href="{{ $item->link ?? '#' }}" class="block w-full h-full relative">
+                                        <img src="{{ $item->image_url }}" alt="{{ $item->title }}">
+                                        <div class="slide-overlay">
+                                            <h4 class="text-base font-bold leading-tight">{{ $item->title }}</h4>
+                                            <span class="text-xs uppercase tracking-wider text-indigo-300">{{ $item->type }}</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            @endforeach
+                        @endfor
                     </div>
-                </a>
-            </div>
-        @endforeach
-    @endfor
-</div>
                     <div class="swiper-pagination"></div>
                 </div>
             </section>
 
-            {{-- CARACTERÍSTICAS --}}
             <section id="features" class="grid md:grid-cols-3 gap-8 text-center pb-24">
                 <div class="p-8 bg-gray-800/50 rounded-2xl border border-gray-700 hover:border-indigo-500/50 transition group">
                     <div class="w-16 h-16 bg-indigo-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition">
@@ -190,7 +187,6 @@
                 </section>
             @endguest
 
-            {{-- FOOTER CALL TO ACTION --}}
             <section class="py-20 text-center border-t border-gray-800">
                 <h2 class="text-3xl md:text-4xl font-extrabold mb-8 text-white">¿Listo para empezar tu aventura?</h2>
                 <a href="{{ route('register') }}" class="cta-button text-xl px-12 py-5 bg-white text-gray-900 rounded-full font-bold hover:bg-gray-200 transition">Únete Gratis</a>
@@ -198,7 +194,6 @@
         </main>
     </div>
 
-    {{-- SCRIPT ESPECÍFICO PARA LA LANDING --}}
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

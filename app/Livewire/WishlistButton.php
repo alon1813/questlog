@@ -15,7 +15,7 @@ class WishlistButton extends Component
     public function addToWishlist()
     {
         if (!Auth::check()) {
-            // Si el usuario no está logueado, lo redirige al login
+            
             return $this->redirect(route('login'), navigate: true);
         }
 
@@ -25,12 +25,12 @@ class WishlistButton extends Component
         $existingProduct = $user->wishlistProducts()->where('product_id', $this->product->id)->first();
 
         if ($existingProduct) {
-            // Si ya está, lo quita
+            
             $newQuantity = $existingProduct->pivot->quantity + 1;
             $user->wishlistProducts()->updateExistingPivot($this->product->id, ['quantity' => $newQuantity]);
             
         } else {
-            // Si no está, lo añade
+            
             $user->wishlistProducts()->attach($this->product->id, ['quantity' => 1]);
             
         }

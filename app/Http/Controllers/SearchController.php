@@ -14,17 +14,15 @@ class SearchController extends Controller
 {
     public function index(Request $request)
     {
-        $searchType = $request->input('type', 'game'); // Por defecto busca juegos
+        $searchType = $request->input('type', 'game'); 
         $query = $request->input('query');
         $results = [];
-
-        // Inicializamos para evitar errores si no hay usuario autenticado o resultados
         $userItemsInCollection = collect();
-        $dbItems = collect(); // Inicializamos para evitar errores si no hay query
+        $dbItems = collect(); 
 
         if ($query) {
 
-            // --- Lógica para obtener resultados de la API (Jikan para anime, RAWG para juegos) ---
+        
             if ($searchType === 'anime') {
                 $apiUrl = "https://api.jikan.moe/v4/anime?q=" . urlencode($query) . "&limit=12";
                 $response = Http::get($apiUrl);
@@ -42,7 +40,7 @@ class SearchController extends Controller
                         ];
                     })->all();
                 }
-            } else { // searchType === 'game'
+            } else { 
                 $apiKey = env('RAWG_API_KEY');
                 $apiUrl = "https://api.rawg.io/api/games?key={$apiKey}&search=" . urlencode($query) . "&page_size=12";
                 $response = Http::get($apiUrl);
@@ -54,27 +52,23 @@ class SearchController extends Controller
                             'type' => 'game',
                             'title' => $game['name'],
                             'cover_image_url' => $game['background_image'] ?? 'https://via.placeholder.com/300x400?text=No+Image',
-                            'synopsis' => 'Not available from this API.', // RAWG no suele dar synopsis directamente en la búsqueda
+                            'synopsis' => 'Not available from this API.', 
                             'released' => $game['released'] ?? 'N/A',
                         ];
                     })->all();
                 }
             }
-            // --- FIN Lógica API ---
 
-
-            // --- Lógica para marcar ítems en la colección y obtener el ID del pivot ---
             if (Auth::check()) {
                 /** @var \App\Models\User $user */ 
                 $user = Auth::user();
 
-                // Primero, obtenemos todos los Item.id de la base de datos que corresponden a los resultados de la API.
-                // Esto es necesario porque el $item->id de tu BD es diferente al $api_id de la API externa.
+                
                 $apiItemIdentifiers = collect($results)->map(function ($item) {
-                    return ['api_id' => (string) $item['api_id'], 'type' => $item['type']]; // Asegura que api_id sea string
-                })->unique()->values()->toArray(); // Asegura valores únicos para la consulta
+                    return ['api_id' => (string) $item['api_id'], 'type' => $item['type']]; 
+                })->unique()->values()->toArray(); 
 
-                // Separamos api_ids y types para las cláusulas whereIn
+                
                 $apiIdsToSearch = array_column($apiItemIdentifiers, 'api_id');
                 $typesToSearch = array_column($apiItemIdentifiers, 'type');
 
@@ -82,32 +76,30 @@ class SearchController extends Controller
                             ->whereIn('type', $typesToSearch)
                             ->get();
 
-                // Luego, obtenemos los ítems que el usuario tiene en su colección,
-                // incluyendo el pivot, y los indexamos por 'item_id' para fácil acceso.
-                $userItemsInCollection = $user->items() // Ahora el IDE sabe que $user es de tipo User
-                                            ->whereIn('item_id', $dbItems->pluck('id')) // Filtramos solo los que están en los resultados actuales
+                
+                $userItemsInCollection = $user->items() 
+                                            ->whereIn('item_id', $dbItems->pluck('id')) 
                                             ->withPivot('id')
-                                            ->get() // Obtenemos las instancias de Item con su pivot
-                                            ->keyBy('id'); // Indexamos por el ID del modelo Item (no del pivot)
-                                            // Con 'keyBy('id')', cada elemento de $userItemsInCollection es un modelo Item,
-                                            // y podemos acceder a su pivot a través de $item->pivot->id
+                                            ->get() 
+                                            ->keyBy('id'); 
+                                            
             }
 
-            // Recorremos los resultados de la API y marcamos si el usuario ya los tiene en su colección
-            foreach ($results as &$result) { // Usamos '&' para modificar el array directamente
+            
+            foreach ($results as &$result) { 
                 $result['in_collection'] = false;
-                $result['user_list_item_id'] = null; // Inicializamos a null
+                $result['user_list_item_id'] = null; 
 
-                // Buscamos el Item local que corresponda al resultado actual de la API
+                
                 $itemInDb = $dbItems->first(function ($dbItem) use ($result) {
-                    // Asegura que la comparación sea estricta en tipo también si es necesario
+                    
                     return (string) $dbItem->api_id === (string) $result['api_id'] && $dbItem->type === $result['type'];
                 });
 
                 if ($itemInDb && $userItemsInCollection->has($itemInDb->id)) {
                     $inCollectionItem = $userItemsInCollection->get($itemInDb->id);
                     $result['in_collection'] = true;
-                    // Aquí obtenemos el ID del registro pivot
+                
                     $result['user_list_item_id'] = $inCollectionItem->pivot->id;
                 }
             }

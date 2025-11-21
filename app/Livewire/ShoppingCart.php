@@ -15,30 +15,30 @@ use Illuminate\Support\Facades\Storage;
 
 class ShoppingCart extends Component
 {
-    public $items; // Usaremos $items para la colección de productos en el carrito
-    public $selectedItems = []; // Para los checkboxes de selección múltiple
+    public $items; 
+    public $selectedItems = []; 
 
-    // Listener para actualizar el carrito cuando se emita un evento (ej. desde ProductCard)
-    protected $listeners = ['productAddedToCart' => 'loadCartItems']; // Cambiado a loadCartItems
+    
+    protected $listeners = ['productAddedToCart' => 'loadCartItems']; 
 
-    // Propiedad computada para el subtotal de los ítems seleccionados
+    
     public function getSelectedSubtotalProperty()
     {
         return $this->items
             ->whereIn('id', $this->selectedItems)
             ->sum(function ($item) {
-                // $item es un Product con el pivot cargado
+                
                 return $item->price * ($item->pivot->quantity ?? 1);
             });
     }
 
-    // Se ejecuta al iniciar el componente
+    
     public function mount()
     {
         $this->loadCartItems();
     }
 
-    // Carga o recarga los ítems del carrito del usuario
+    
     private function loadCartItems()
     {
         /** @var \App\Models\User $user */
@@ -48,7 +48,7 @@ class ShoppingCart extends Component
                                 ->withPivot('quantity')
                                 ->get();
         } else {
-            $this->items = collect(); // Si no hay usuario, carrito vacío
+            $this->items = collect(); 
         }
     }
 
