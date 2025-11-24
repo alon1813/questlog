@@ -7,7 +7,6 @@ import SearchPage from "./components/SearchPage.jsx";
 import NotificationsBell from "./components/NotificationBell.jsx";
 
 
-// 🔧 Renderizador global de React
 document.addEventListener("DOMContentLoaded", () => {
     const rootElement = document.getElementById("react-search");
     const bell = document.getElementById("react-notifications");

@@ -9,16 +9,14 @@ use Illuminate\Support\Facades\Schema;
 
 class ProductSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    
     public function run(): void
     {
-        Schema::disableForeignKeyConstraints(); // <-- DESACTIVA LAS REGLAS DE CLAVE FORÁNEA
-        Product::truncate();                    // <-- VACÍA LA TABLA DE PRODUCTOS
-        Schema::enableForeignKeyConstraints();  // <-- REACTIVA LAS REGLAS
+        Schema::disableForeignKeyConstraints(); 
+        Product::truncate();                    
+        Schema::enableForeignKeyConstraints();  
 
-        // Productos existentes
+        
         Product::create([
             'name' => 'Nintendo Switch OLED',
             'price' => 349.99,
@@ -51,7 +49,7 @@ class ProductSeeder extends Seeder
             'category' => 'Figuras',
         ]);
 
-        // Productos adicionales que me has proporcionado
+        
         Product::create([
             'name' => 'Auriculares Gaming HyperX Cloud II',
             'price' => 79.99,

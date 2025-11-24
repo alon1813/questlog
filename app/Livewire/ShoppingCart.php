@@ -52,7 +52,6 @@ class ShoppingCart extends Component
         }
     }
 
-    // Incrementa la cantidad de un producto
     public function increaseQuantity($productId)
     {
         /** @var \App\Models\User $user */
@@ -60,11 +59,10 @@ class ShoppingCart extends Component
         if ($user) {
             $currentQuantity = $user->wishlistProducts()->where('product_id', $productId)->first()->pivot->quantity ?? 0;
             $user->wishlistProducts()->updateExistingPivot($productId, ['quantity' => $currentQuantity + 1]);
-            $this->loadCartItems(); // Recargar los productos después de la actualización
+            $this->loadCartItems(); 
         }
     }
 
-    // Decrementa la cantidad de un producto
     public function decreaseQuantity($productId)
     {
         /** @var \App\Models\User $user */
@@ -76,58 +74,46 @@ class ShoppingCart extends Component
                 $newQuantity = $productInWishlist->pivot->quantity - 1;
                 $user->wishlistProducts()->updateExistingPivot($productId, ['quantity' => $newQuantity]);
             } else {
-                // Si la cantidad es 1 o menos, eliminar el producto de la wishlist
                 $user->wishlistProducts()->detach($productId);
-                // Si el item fue removido, también deseleccionarlo
                 $this->selectedItems = array_diff($this->selectedItems, [$productId]);
             }
-            $this->loadCartItems(); // Recargar los productos después de la actualización
+            $this->loadCartItems(); 
         }
     }
 
-    // Elimina un producto por completo del carrito
     public function removeItem($productId)
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
         if ($user) {
             $user->wishlistProducts()->detach($productId);
-            // Si el item fue removido, también deseleccionarlo
             $this->selectedItems = array_diff($this->selectedItems, [$productId]);
-            $this->loadCartItems(); // Recargar los productos después de la eliminación
-            // $this->emit('productRemovedFromCart'); // Puedes emitir este evento si otros componentes lo escuchan
+            $this->loadCartItems(); 
         }
     }
 
-    // Redirige al resumen de compra para los ítems seleccionados
     public function goToCheckout()
     {
         if (empty($this->selectedItems)) {
             session()->flash('error', 'Por favor, selecciona al menos un producto para comprar.');
             return;
         }
-        // Redirige usando el método helper de Livewire
         return $this->redirect(route('checkout.summary', ['selectedItems' => implode(',', $this->selectedItems)]), navigate: true);
     }
 
-    // === MÉTODO PARA COMPRA INDIVIDUAL DESDE LIVEWIRE ===
     public function buySingleItemLivewire($productId)
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // 1. Encontrar el producto en la wishlist del usuario con su cantidad
-        // Asegúrate de cargar el pivot para obtener la cantidad
         $wishlistItem = $user->wishlistProducts()->where('products.id', $productId)->first();
 
-        // Asegurarse de que el producto exista en la wishlist y tenga una cantidad válida
         if (!$wishlistItem || $wishlistItem->pivot->quantity <= 0) {
             session()->flash('error', 'El producto no está en tu carrito o la cantidad es inválida.');
-            $this->loadCartItems(); // Recargar por si acaso el estado es inconsistente
+            $this->loadCartItems();
             return;
         }
 
-        // Acceder al objeto Product real a través de $wishlistItem
         $product = $wishlistItem;
         $quantity = $wishlistItem->pivot->quantity;
 
@@ -158,7 +144,6 @@ class ShoppingCart extends Component
             DB::commit();
 
             // 5. Generar PDF y enviar Email
-            // Es buena práctica asegurar que OrderConfirmationMail y PDF están usando el 'order' cargado con sus relaciones
             $order->load('user', 'items.product');
             $pdf = Pdf::loadView('invoices.order', ['order' => $order]);
             $invoiceFileName = 'factura-' . $order->order_number . '.pdf';
@@ -176,7 +161,7 @@ class ShoppingCart extends Component
             DB::rollBack();
             Log::error('Error al procesar la compra individual (Livewire): ' . $e->getMessage(), ['user_id' => $user->id, 'product_id' => $productId, 'exception' => $e]);
             session()->flash('error', 'Error al procesar tu compra: ' . $e->getMessage());
-            $this->loadCartItems(); // Recargar el carrito por si la transacción falló a mitad y el estado es inconsistente
+            $this->loadCartItems(); 
             return;
         }
     }

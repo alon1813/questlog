@@ -1,17 +1,13 @@
 <x-app-layout>
     <div class="py-12">
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8"> {{-- Un poco más ancho para el artículo --}}
+        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8"> 
             <article>
-                {{-- ===== CABECERA CON IMAGEN DE FONDO (DISEÑO IMPACTANTE) ===== --}}
                 <header
                     class="relative h-80 md:h-96 rounded-lg flex flex-col justify-end p-6 md:p-10 text-white bg-cover bg-center shadow-lg mb-12"
-                    {{-- Usamos la imagen del post o la predeterminada, con gradiente --}}
                     style="background-image: linear-gradient(to top, rgba(0,0,0,0.85) 30%, transparent 90%), url('{{ $post->image_url ?? asset('images/default-post-image.png') }}');">
 
-                    {{-- Título del Post --}}
                     <h1 class="text-3xl md:text-4xl font-black z-10 leading-tight">{{ $post->title }}</h1>
 
-                    {{-- Información del Autor y Fecha --}}
                     <div class="flex items-center gap-3 z-10 mt-4">
                         <a href="{{ route('profiles.show', $post->user) }}">
                             <img class="h-10 w-10 rounded-full object-cover border-2 border-white/50"
@@ -26,9 +22,7 @@
                         </div>
                     </div>
                 </header>
-                {{-- ============================================================= --}}
 
-                {{-- Contenido del Artículo (Ahora fuera del div de la imagen, y usando Tailwind Typography) --}}
                 <div class="bg-[var(--bg-secondary)] dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 md:p-8">
                     <div class="prose prose-lg dark:prose-invert max-w-none text-[var(--text-secondary)]
                                 prose-headings:text-[var(--text-primary)] prose-strong:text-white
@@ -39,7 +33,6 @@
                 </div>
             </article>
 
-            {{-- Sección de Comentarios (Con el fondo adecuado y título) --}}
             <div class="mt-8 bg-[var(--bg-secondary)] dark:bg-gray-800 shadow-sm sm:rounded-lg">
                 <div class="p-6 md:p-8">
                     <h2 class="text-2xl font-bold text-[var(--text-primary)] dark:text-gray-100">Comentarios ({{ $post->comments->count() }})</h2>

@@ -31,7 +31,7 @@ class Post extends Model
 
     public static function booted(){
         static::deleting(function($post){
-            // Al eliminar un post, eliminamos sus actividades relacionadas
+            
             $post->activities()->delete();
         });
     }

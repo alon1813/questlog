@@ -46,12 +46,12 @@
 <body class="font-sans antialiased" style="background-color: var(--bg-primary);">
 
     <div x-data="{ showNotification: false, notificationMessage: '' }"
-         @product-added.window="
+        @product-added.window="
             console.log('Evento product-added recibido vía @:', $event.detail);
             notificationMessage = '¡' + $event.detail.productName + ' añadido al carrito!';
             showNotification = true;
             setTimeout(() => showNotification = false, 3000);
-         ">
+        ">
 
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             @include('layouts.navigation')

@@ -24,10 +24,10 @@ use App\Livewire\Admin\UserManagement;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        // Si el usuario está logueado, llévalo al dashboard.
+        
         return redirect()->route('dashboard');
     }
-    // Si es un invitado, muéstrale la landing page.
+    
     return app(LandingPageController::class)->index();
 })->name('home');
 
@@ -35,8 +35,6 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-
-// Rutas para crear posts (solo para admins)
 Route::middleware(['auth', 'can:manage-posts'])->group(function () {
     
     Route::get('/admin/posts', [PostController::class, 'adminIndex'])->name('posts.admin.index');

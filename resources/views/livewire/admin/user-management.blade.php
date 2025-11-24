@@ -48,7 +48,7 @@
                                         {{ $user->email }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        {{-- ✅ CORREGIDO: Añadido wire:key y usando $user->id --}}
+                                        
                                         <select 
                                             wire:key="role-select-{{ $user->id }}"
                                             wire:change="changeRole({{ $user->id }}, $event.target.value)" 
@@ -61,7 +61,7 @@
                                         </select>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        {{-- ✅ CORREGIDO: Añadido wire:key y usando $user->id --}}
+                                        
                                         <select 
                                             wire:key="status-select-{{ $user->id }}"
                                             wire:change="changeStatus({{ $user->id }}, $event.target.value)" 
@@ -74,7 +74,7 @@
                                         </select>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        {{-- ✅ CORREGIDO: Usando $user->id --}}
+                                        
                                         <button 
                                             wire:key="delete-btn-{{ $user->id }}"
                                             wire:click="deleteUser({{ $user->id }})" 

@@ -57,7 +57,7 @@ class User extends Authenticatable
      */
     public function items()
     {
-        return $this->belongsToMany(Item::class, 'item_user') // Si tu tabla es 'item_user'
+        return $this->belongsToMany(Item::class, 'item_user') 
                     ->using(ItemUser::class)
                     ->withPivot('id', 'status', 'score', 'review', 'episodes_watched')
                     ->withTimestamps();
@@ -85,20 +85,16 @@ class User extends Authenticatable
                     ->withTimestamps();
     }
 
-
-    //usuarios que me siguen
     public function followers()
     {
         return $this->belongsToMany(User::class, 'follower_user', 'following_id', 'follower_id');
     }
 
-    //usuarios que sigo
     public function following()
     {
         return $this->belongsToMany(User::class, 'follower_user', 'follower_id', 'following_id');
     }
 
-    //comprobar si un usuario autenticado sigue a otro
     public function isFollowing(User $user)
     {
         return $this->following()->where('following_id', $user->id)->exists();

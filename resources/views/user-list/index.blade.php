@@ -2,7 +2,6 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" x-data="{ view: 'grid' }">
 
-            {{-- Sección de Mensajes de Feedback (Éxito, Info, Error) --}}
             @if (session('success'))
                 <div class="mb-4 p-4 bg-green-100 dark:bg-green-900 border border-green-400 text-green-700 dark:text-green-200 rounded" role="alert">
                     {{ session('success') }}
@@ -18,11 +17,9 @@
                     {{ session('error') }}
                 </div>
             @endif
-            {{-- Fin Sección de Mensajes de Feedback --}}
 
             <h1 class="text-3xl font-bold mb-6 text-[var(--text-primary)]">Mi Colección</h1>
 
-            {{-- Sección de Filtros y Cambiador de Vista (Cuadrícula/Lista) --}}
             <div class="flex flex-wrap justify-between items-center bg-[var(--bg-secondary)] p-4 rounded-lg mb-8 text-[var(--text-secondary)]">
                 <div class="filters flex items-center space-x-2">
                     
@@ -41,18 +38,16 @@
             <div x-show="view === 'grid'" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-4">
                 @forelse ($items as $item)
                     <div class="bg-[var(--bg-secondary)] rounded-lg overflow-hidden transform hover:scale-105 transition-transform flex flex-col relative group">
-                        {{-- Enlace principal a la página de edición del ítem en la colección --}}
+                        
                         <a href="{{ route('user-list.edit', $item->pivot->id) }}" class="block flex-grow">
                             <img src="{{ $item->cover_image_url ?? asset('images/default-game-cover.png') }}"
                                 alt="Portada de {{ $item->title }}"
                                 class="w-full aspect-[2/3] object-cover">
                         </a>
-                        {{-- Contenedor para el título y el botón de eliminar --}}
+                        
                         <div class="p-2 flex flex-col items-center justify-between flex-grow">
                             <h3 class="text-sm font-semibold text-[var(--text-primary)] text-center mb-1 leading-tight">{{ $item->title }}</h3>
                             
-                            {{-- Botón de Eliminar (visible al hacer hover o siempre si prefieres) --}}
-                            {{-- CORRECCIÓN: Pasar el ID del PIVOT para borrar --}}
                             <form action="{{ route('user-list.destroy', $item->pivot->id) }}" method="POST" class="w-full mt-2">
                                 @csrf
                                 @method('DELETE')
@@ -69,13 +64,11 @@
                     <p class="col-span-full text-center text-[var(--text-secondary)]">No tienes ítems en esta categoría.</p>
                 @endforelse
             </div>
-            {{-- Fin Vista de CUADRÍCULA --}}
-
-            {{-- Vista de LISTA (List View) --}}
+            
             <div x-show="view === 'list'" class="space-y-3" style="display: none;">
                 @forelse ($items as $item)
                     <div class="flex items-center gap-4 bg-[var(--bg-secondary)] p-3 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors">
-                        {{-- Enlace principal a la página de edición del ítem en la colección --}}
+                        
                         <a href="{{ route('user-list.edit', $item->pivot->id) }}" class="flex items-center gap-4 flex-grow">
                             <img src="{{ $item->cover_image_url ?? asset('images/default-game-cover.png') }}"
                             alt="Portada de {{ $item->title }}"
@@ -92,8 +85,7 @@
                                 @endif
                             </div>
                         </a>
-                        {{-- Botón de Eliminar --}}
-                        {{-- CORRECCIÓN: Pasar el ID del PIVOT para borrar --}}
+                        
                         <form action="{{ route('user-list.destroy', $item->pivot->id) }}" method="POST" class="ml-4 flex-shrink-0">
                             @csrf
                             @method('DELETE')

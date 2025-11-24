@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Activity extends Model
 {
     use HasFactory;
-    protected $guarded = []; // Permitir asignación masiva en todos los campos
+    protected $guarded = []; 
 
     public function subject()
     {

@@ -17,7 +17,7 @@
                         @if (auth()->user()->id !== $user->id)
                             <livewire:follow-button :user="$user" />
                         @else
-                            {{-- Si es nuestro propio perfil, podemos ofrecer un botón para ir a editarlo --}}
+                            
                             <a href="{{ route('profile.edit') }}" class="px-6 py-2 bg-[var(--text-primary)] text-white font-bold rounded-lg hover:opacity-80">
                                 Editar Perfil
                             </a>
@@ -42,18 +42,13 @@
                     @if($user->items->isNotEmpty())
                         @foreach ($user->items as $item)
                             @php
-                                $itemUser = $item->pivot; // Esto es tu modelo ItemUser
-                                $currentUser = auth()->user(); // El usuario que está logueado, si lo hay
+                                $itemUser = $item->pivot; 
+                                $currentUser = auth()->user(); 
 
-                                // Determinar si el perfil que estamos viendo es el del usuario autenticado
                                 $isOwnProfile = $currentUser && ($user->id === $currentUser->id);
 
-                                // Determinar si se puede interactuar con el botón de like
-                                // (Solo si hay un usuario logueado Y NO es su propio perfil)
                                 $canInteractWithLike = $currentUser && !$isOwnProfile;
 
-                                // Comprobar si el ItemUser actual ya ha sido likeado por el currentUser
-                                // Usamos la relación 'likes' que precargamos con un 'where user_id = Auth::id()'
                                 $isLikedByCurrentUser = $canInteractWithLike && $itemUser->likes->isNotEmpty();
 
                                 $statusColor = match ($item->pivot->status) {
@@ -65,12 +60,12 @@
                             @endphp
 
                             <div class="relative group">
-                                {{-- Enlace de la tarjeta --}}
+                                
                                 @if ($isOwnProfile)
-                                    {{-- Si es nuestro propio perfil, podemos editar el ítem --}}
+                                    
                                     <a href="{{ route('user-list.edit', $item->pivot->id) }}" class="block">
                                 @else
-                                    {{-- Si es un perfil ajeno, el enlace podría ser al detalle del Item (no del ItemUser) --}}
+                                    
                                     <a href="{{ route('items.show', $item->id) }}" class="block"> 
                                 @endif
 
@@ -100,7 +95,6 @@
                                     </div>
                                 </a>
 
-                                {{-- Botón de "Me Gusta" (solo si se puede interactuar) --}}
                                 @if ($canInteractWithLike)
                                     <livewire:like-button :itemUser="$itemUser" :key="'like-btn-'.$itemUser->id" />
                                 @endif
@@ -114,8 +108,6 @@
 
                 </div>
             </div>
-            {{-- **FIN DE LA SECCIÓN DE LA COLECCIÓN DE JUEGOS** --}}
-
         </div>
     </div>
 </x-app-layout>

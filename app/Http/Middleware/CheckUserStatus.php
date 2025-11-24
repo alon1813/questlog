@@ -12,13 +12,13 @@ class CheckUserStatus
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check() && Auth::user()->status === 'suspended') {
-            // Si el usuario está suspendido
-            Auth::logout(); // Cierra su sesión
+            
+            Auth::logout(); 
 
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            // Redirige al login con un mensaje de error
+            
             return redirect()->route('login')->with('error', 'Tu cuenta ha sido suspendida. Contacta al administrador.');
         }
 

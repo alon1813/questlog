@@ -16,7 +16,7 @@
                     </div>
 
                     <div class="md:w-2/3 mt-6 md:mt-0">
-                        {{-- Asegúrate que la ruta user-list.update espera el modelo ItemUser --}}
+                        
                         <form action="{{ route('user-list.update', $userListItem) }}" method="POST"> 
                             @csrf
                             @method('PUT')
@@ -48,12 +48,12 @@
                                 <textarea name="review" id="review" rows="5" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ $userListItem->review }}</textarea>
                             </div>
 
-                            {{-- CORRECCIÓN: Usar $item->type y $item->episodes --}}
+                            
                             @if ($item->type === 'anime' && $item->episodes > 0) 
                                 <div class="mt-4">
                                     <label for="episodes_watched" class="block font-medium text-sm text-gray-700 dark:text-gray-300">Progreso de Episodios</label>
                                     <div class="flex items-center space-x-2 mt-1">
-                                        {{-- CORRECCIÓN: Usar $userListItem->episodes_watched --}}
+                                        
                                         <input type="number" name="episodes_watched" id="episodes_watched" value="{{ $userListItem->episodes_watched ?? 0 }}" min="0" max="{{ $item->episodes }}" class="block w-24 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm">
                                         <span class="text-sm text-gray-500 dark:text-gray-400">/ {{ $item->episodes }} episodios</span>
                                     </div>
@@ -73,8 +73,7 @@
                     </h3>
                     <div class="mt-4">
                         <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
-                            {{-- Mostramos esto solo si el item es un anime y tiene episodios --}}
-                            {{-- CORRECCIÓN: Usar $item->type y $item->episodes --}}
+                            
                             @if ($item->type === 'anime' && $item->episodes) 
                                 <div class="sm:col-span-1">
                                     <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Episodios</dt>
@@ -109,25 +108,25 @@
                         <div class="space-y-6">
                             @forelse ($publicReviews as $review)
                                 <div class="flex space-x-4">
-                                    {{-- Enlace al perfil --}}
+                                    
                                     <a href="{{ route('profiles.show', ['user' => $review->user->username]) }}" class="flex-shrink-0">
                                         <img class="h-12 w-12 rounded-full object-cover" 
                                         src="{{ $review->user->avatar ? asset('storage/' . $review->user->avatar) : asset('images/default-avatar.png') }}" 
                                         alt="Avatar">
                                     </a>
                                     <div class="flex-grow bg-[var(--bg-primary)] p-4 rounded-lg border border-[var(--border-color)]">
-                                        <div class="flex justify-between items-start mb-2"> {{-- items-start para alinear arriba --}}
+                                        <div class="flex justify-between items-start mb-2"> 
                                             <p>
-                                                {{-- Nombre y puntuación --}}
+                                                
                                                 <a href="{{ route('profiles.show', ['user' => $review->user->username]) }}" class="font-bold hover:underline text-white">{{ $review->user->name }}</a>
                                                 @if ($review->score)
                                                     <span class="ml-2 text-yellow-400 font-bold">⭐ {{ $review->score }} / 10</span>
                                                 @endif
                                             </p>
-                                            {{-- REEMPLAZA LA FECHA POR EL BOTÓN LIVEWIRE --}}
+                                            
                                             <livewire:helpful-vote-button :reviewPivot="$review" :key="'vote-'.$review->id" />
                                         </div>
-                                        {{-- Texto de la reseña --}}
+                                        
                                         <p class="text-[var(--text-secondary)] text-sm">
                                             {!! nl2br(e($review->review)) !!}
                                         </p>

@@ -17,7 +17,6 @@
                 @endif
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {{-- Columna de Productos --}}
                     <div>
                         <h2 class="text-2xl font-semibold mb-4 text-white">Productos Seleccionados</h2>
                         <div class="space-y-4">
@@ -37,7 +36,6 @@
                         </div>
                     </div>
 
-                    {{-- Columna de Resumen del Pedido --}}
                     <div class="bg-[var(--bg-secondary)] p-6 rounded-lg shadow-lg">
                         <h2 class="text-2xl font-semibold mb-4 text-white">Detalles del Pedido</h2>
                         
@@ -47,18 +45,18 @@
                         </div>
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-gray-400">Envío:</span>
-                            <span class="text-white">Gratis</span> {{-- O puedes calcular aquí --}}
+                            <span class="text-white">Gratis</span>
                         </div>
-                        <div class="border-t border-gray-700 my-4"></div> {{-- Separador --}}
+                        <div class="border-t border-gray-700 my-4"></div> 
                         <div class="flex justify-between items-center text-2xl font-bold mb-6">
                             <span class="text-white">Total:</span>
                             <span class="text-[var(--text-primary)]">{{ number_format($total, 2) }}€</span>
                         </div>
 
-                        {{-- Botón para Confirmar la Compra (próximo paso: Livewire para esto) --}}
-                        <form action="{{ route('checkout.process') }}" method="POST"> {{-- Esta ruta 'checkout.process' la crearemos después --}}
+
+                        <form action="{{ route('checkout.process') }}" method="POST"> 
                             @csrf
-                            {{-- Aquí puedes añadir campos ocultos con los IDs o datos necesarios --}}
+                            
                             @foreach ($selectedProducts as $product)
                                 <input type="hidden" name="product_ids[]" value="{{ $product->id }}">
                                 <input type="hidden" name="quantities[{{ $product->id }}]" value="{{ $product->pivot->quantity }}">

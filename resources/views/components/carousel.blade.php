@@ -1,27 +1,23 @@
 @props(['slides', 'title' => 'Elementos Populares'])
 
 @push('styles')
-    {{-- Cargamos estilos de Swiper v11 --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     
     <style>
-        /* EL CONTENEDOR PRINCIPAL */
         .swiper {
             width: 100%;
             padding-top: 20px;
             padding-bottom: 50px;
         }
 
-        /* LAS TARJETAS INDIVIDUALES */
         .swiper-slide {
             background-position: center;
             background-size: cover;
-            width: 260px;  /* ANCHO FIJO IMPORTANTE */
-            height: 360px; /* ALTO FIJO IMPORTANTE */
+            width: 260px;  
+            height: 360px; 
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            /* Esto evita que se estiren */
             flex-shrink: 0;
         }
         
@@ -32,7 +28,6 @@
             object-fit: cover;
         }
 
-        /* TEXTO SOBRE LA IMAGEN */
         .slide-info {
             position: absolute;
             bottom: 0;
@@ -43,7 +38,6 @@
             color: white;
         }
 
-        /* PAGINACIÓN */
         .swiper-pagination-bullet { background: rgba(255,255,255,0.5); }
         .swiper-pagination-bullet-active { background: white; }
     </style>
@@ -83,7 +77,7 @@
                     effect: 'coverflow',
                     grabCursor: true,
                     centeredSlides: true,
-                    slidesPerView: 'auto', // ESTO USA EL ANCHO DE CSS (260px)
+                    slidesPerView: 'auto', 
                     coverflowEffect: {
                         rotate: 0,
                         stretch: 0,
@@ -91,7 +85,7 @@
                         modifier: 2,
                         slideShadows: true,
                     },
-                    loop: true, // Bucle infinito
+                    loop: true, 
                     autoplay: {
                         delay: 2500,
                         disableOnInteraction: false,

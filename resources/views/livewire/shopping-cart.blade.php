@@ -61,7 +61,7 @@
                 class="w-full py-3 px-6 bg-blue-600 text-white font-bold rounded-lg shadow-md transition-colors
                     hover:bg-blue-700
                     disabled:bg-gray-500 disabled:cursor-not-allowed"
-                {{ count($selectedItems) === 0 ? 'disabled' : '' }} {{-- Deshabilitado si no hay nada seleccionado --}}
+                {{ count($selectedItems) === 0 ? 'disabled' : '' }} 
             >
                 Comprar Seleccionados ({{ count($selectedItems) }})
             </button>

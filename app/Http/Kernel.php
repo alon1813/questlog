@@ -12,12 +12,11 @@ class Kernel extends HttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
-        // \App\Http\Middleware\TrustHosts::class,
-        \Illuminate\Http\Middleware\TrustProxies::class, // <-- Apunta a Illuminate
-        \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class, // <-- Apunta a Illuminate
-        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class, // <-- Apunta a Illuminate
-        \Illuminate\Foundation\Http\Middleware\TrimStrings::class, // <-- Apunta a Illuminate
-        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class, // <-- Apunta a Illuminate
+        \Illuminate\Http\Middleware\TrustProxies::class, 
+        \Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance::class, 
+        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class, 
+        \Illuminate\Foundation\Http\Middleware\TrimStrings::class, 
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class, 
     ];
 
     /**
@@ -27,17 +26,17 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            \Illuminate\Cookie\Middleware\EncryptCookies::class, // <-- Apunta a Illuminate
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class, // <-- Apunta a Illuminate
-            \Illuminate\Session\Middleware\StartSession::class, // <-- Apunta a Illuminate
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class, // <-- Apunta a Illuminate
-            \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class, // <-- Apunta a Illuminate
-            \Illuminate\Routing\Middleware\SubstituteBindings::class, // <-- Apunta a Illuminate
+            \Illuminate\Cookie\Middleware\EncryptCookies::class, 
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class, 
+            \Illuminate\Session\Middleware\StartSession::class, 
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class, 
+            \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class, 
+            \Illuminate\Routing\Middleware\SubstituteBindings::class, 
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ],
 
         'api' => [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class, // <-- ¡Este es el de Sanctum!
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class, 
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
@@ -49,14 +48,14 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
-        'auth' => \Illuminate\Auth\Middleware\Authenticate::class, // <-- Apunta a Illuminate
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class, // <-- Apunta a Illuminate
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class, 
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class, 
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class, // <-- Este lo creamos con make:middleware
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class, 
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class, // <-- Apunta a Illuminate
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class, 
     ];
 }
