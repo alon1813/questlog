@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    //
 
     public function index(Request $request){
         $user = $request->user();
@@ -17,7 +16,7 @@ class DashboardController extends Controller
 
         $stats = [
             'playing' => $user->items()->where('type', 'game')->wherePivot('status', 'Jugando')->count(),
-            'watching' => $user->items()->where('type', 'anime')->wherePivot('status', 'Jugando')->count(), // 'Jugando' es 'Viendo'
+            'watching' => $user->items()->where('type', 'anime')->wherePivot('status', 'Jugando')->count(), 
             'completed' => $user->items()->wherePivot('status', 'Completado')->count(),
         ];
         
@@ -66,7 +65,6 @@ class DashboardController extends Controller
                 'image_url' => 'https://cdn11.bigcommerce.com/s-hfy8688lak/images/stencil/1280x1280/products/2593/13618/FFVII_RB_AG_US__97253.1702580872.jpg?c=1', 
                 'link' => '#'
             ],
-            // --- NUEVAS ADICIONES ---
             (object)[
                 'id' => 6, 
                 'title' => 'Elden Ring', 

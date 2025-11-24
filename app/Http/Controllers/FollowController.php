@@ -22,7 +22,6 @@ class FollowController extends Controller
         return back()->with('success', 'Has comenzado a seguir a ' . $user->name);
     }
 
-   
     public function unfollow(Request $request, User $user)
     {
         $request->user()->following()->detach($user->id);       

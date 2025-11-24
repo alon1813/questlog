@@ -8,10 +8,10 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
                 <main class="lg:col-span-2">
-                    <h2 class="text-2xl font-bold mb-6 text-[var(--text-primary)]">Feed de Actividad</h2> {{-- Añadido color --}}
+                    <h2 class="text-2xl font-bold mb-6 text-[var(--text-primary)]">Feed de Actividad</h2> 
                     <div class="space-y-4">
                         @forelse ($activities as $activity)
-                            <div class="flex gap-4 bg-[var(--bg-secondary)] p-4 rounded-lg border-l-4 border-[var(--border-color)] shadow-md"> {{-- Añadido shadow-md --}}
+                            <div class="flex gap-4 bg-[var(--bg-secondary)] p-4 rounded-lg border-l-4 border-[var(--border-color)] shadow-md"> 
                                 <a href="{{ route('profiles.show', $activity->user) }}">
                                     <img class="h-12 w-12 rounded-full object-cover" 
                                     src="{{ $activity->user->avatar_path ? asset('storage/' . $activity->user->avatar_path) : asset('images/default-avatar.png') }}" 

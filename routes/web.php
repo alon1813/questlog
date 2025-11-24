@@ -21,10 +21,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
 use App\Livewire\Admin\UserManagement;
 
-
 Route::get('/', function () {
     if (Auth::check()) {
-        
         return redirect()->route('dashboard');
     }
     
@@ -71,10 +69,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/usuarios/{user}/follow', [FollowController::class, 'follow'])->name('users.follow');
     Route::delete('/usuarios/{user}/unfollow', [FollowController::class, 'unfollow'])->name('users.unfollow');
     Route::get('/notificaciones', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::get('/internal/notifications', [NotificationApiController::class, 'index'])
-        ->name('internal.notifications.index');
-    Route::post('/internal/notifications/mark-as-read', [NotificationApiController::class, 'markAsRead'])
-        ->name('internal.notifications.markAsRead');
+    Route::get('/internal/notifications', [NotificationApiController::class, 'index'])->name('internal.notifications.index');
+    Route::post('/internal/notifications/mark-as-read', [NotificationApiController::class, 'markAsRead'])->name('internal.notifications.markAsRead');
     Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
     Route::get('/checkout/summary', [WishlistController::class, 'checkoutSummary'])->name('checkout.summary');
     Route::post('/checkout/process', [WishlistController::class, 'processCheckout'])->name('checkout.process');

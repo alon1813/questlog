@@ -19,19 +19,16 @@
                     @include('profile.partials.update-profile-information-form')
                 </div>
             </div>
-
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     @include('profile.partials.update-password-form')
                 </div>
             </div>
-
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     @include('profile.partials.delete-user-form')
                 </div>
             </div>
-
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg mt-6">
                 <div class="max-w-xl">
                     <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
@@ -43,7 +40,6 @@
                 </div>
 
                 <div class="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-
                     @if($user->items->isNotEmpty())
                         @foreach ($user->items as $item)
                             <a href="{{ route('user-list.edit', $item->pivot->id) }}" class="block group relative">
@@ -89,11 +85,8 @@
                             Aún no has añadido ningún juego a tu lista. ¡Ve al <a href="{{ route('search.index') }}" class="underline">buscador</a> para empezar!
                         </p>
                     @endif
-
                 </div>
-
-            </div> </div>
+            </div> 
+        </div>
     </div>
-
-
 </x-app-layout>
