@@ -15,18 +15,27 @@ class PostController extends Controller
     }  
     
     public function show(Post $post)
-{
+    {
 
-    $post->load(['comments' =>function($query){
-        $query->where('status', 'visible')->latest();
+        $post->load(['comments' =>function($query){
+            $query->where('status', 'visible')->latest();
 
-    }, 'comments.user']);
+        }, 'comments.user']);
 
-    return view('posts.show', ['post' => $post]);
-}
+        return view('posts.show', ['post' => $post]);
+    }
 
     public function create(){
         return view('posts.create');
+    }
+
+    public function adminIndex(){
+        $posts = Post::latest()->paginate(15);
+        return view('posts.admin.index', ['posts' => $posts]);
+    }
+
+    public function edit(Post $post){
+        return view('posts.edit', ['post' => $post]);
     }
 
     public function store(Request $request){
@@ -43,7 +52,6 @@ class PostController extends Controller
             $validated['status'] = 'pending_review';
         }
         
-        //crear el post asociado al usuario autenticado
         $post = $request->user()->posts()->create($validated);
 
         $post->user->activities()->create([
@@ -55,17 +63,6 @@ class PostController extends Controller
         $request->user()->posts()->create($validated);
 
         return redirect()->route('profile.edit')->with('success', 'Post creado con éxito.');
-    }
-
-    // Mostrar la lista de posts para que el admin pueda gestionarlos
-    public function adminIndex(){
-        $posts = Post::latest()->paginate(15);
-        return view('posts.admin.index', ['posts' => $posts]);
-    }
-
-    // Actualizar un post existente
-    public function edit(Post $post){
-        return view('posts.edit', ['post' => $post]);
     }
 
     public function update(Request $request, Post $post){

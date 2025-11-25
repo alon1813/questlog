@@ -21,7 +21,6 @@ class SearchController extends Controller
         $dbItems = collect(); 
 
         if ($query) {
-
         
             if ($searchType === 'anime') {
                 $apiUrl = "https://api.jikan.moe/v4/anime?q=" . urlencode($query) . "&limit=12";
@@ -107,7 +106,6 @@ class SearchController extends Controller
         }
 
         if ($request->ajax()) {
-             // Si la solicitud viene de React, devolvemos solo los resultados
                 return response()->json($results);
             }
 

@@ -15,9 +15,7 @@ class UserListItemController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = Auth::user(); 
-
         $statusFilter = $request->query('status');
-
         $itemsQuery = $user->items(); 
 
         $itemsQuery->withPivot('id', 'status', 'score', 'review', 'episodes_watched'); 
@@ -31,66 +29,11 @@ class UserListItemController extends Controller
         return view('user-list.index', ['items' => $items, 'statusFilter' => $statusFilter]);
     }
     
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'api_id' => 'required|integer',
-            'type' => 'required|string|in:game,anime',
-            'title' => 'required|string|max:255',
-            'cover_image_url' => 'required|string|max:255',
-            'episodes' => 'nullable|integer',
-        ]);
-
-        $item = Item::firstOrCreate(
-            ['api_id' => $validated['api_id'], 'type' => $validated['type']],
-            [
-                'title' => $validated['title'],
-                'cover_image_url' => $validated['cover_image_url'],
-                'episodes' => $validated['episodes'] ?? null,
-            ]
-        );
-
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-
-        $existingPivot = $user->items()->where('item_id', $item->id)->first();
-
-        // 1. Si la solicitud es JSON (AJAX desde React)
-        if ($request->expectsJson()) {
-            if ($existingPivot) {
-                
-                return response()->json([
-                    'message' => 'El item ya estaba en tu colección.',
-                    'user_list_item_id' => $existingPivot->pivot->id 
-                ], 200); 
-            }
-
-            $user->items()->attach($item->id, ['status' => 'Pendiente']);
-            
-            $pivotId = $user->items()->where('item_id', $item->id)->first()->pivot->id;
-
-            return response()->json([
-                'message' => '¡' . $item->title . ' ha sido añadido a tu lista!',
-                'user_list_item_id' => $pivotId 
-            ]);
-        }
-
-        // 2. Si NO es JSON, es un formulario HTML (tu lógica antigua)
-        if ($existingPivot) {
-            return back()->with('info', '¡' . $item->title . ' ya estaba en tu colección!');
-        } else {
-            $user->items()->attach($item->id, ['status' => 'Pendiente']);
-            return back()->with('success', '¡' . $item->title . ' ha sido añadido a tu lista!');
-        }
-    }
-
-
     public function edit(ItemUser $userListItem) 
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        
         if ($userListItem->user_id !== $user->id) {
             return redirect()->route('user-list.index')->with('error', 'No tienes permiso para editar esta entrada.');
         }
@@ -123,19 +66,64 @@ class UserListItemController extends Controller
         ]);
     }
 
-    
+     public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'api_id' => 'required|integer',
+            'type' => 'required|string|in:game,anime',
+            'title' => 'required|string|max:255',
+            'cover_image_url' => 'required|string|max:255',
+            'episodes' => 'nullable|integer',
+        ]);
+
+        $item = Item::firstOrCreate(
+            ['api_id' => $validated['api_id'], 'type' => $validated['type']],
+            [
+                'title' => $validated['title'],
+                'cover_image_url' => $validated['cover_image_url'],
+                'episodes' => $validated['episodes'] ?? null,
+            ]
+        );
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $existingPivot = $user->items()->where('item_id', $item->id)->first();
+
+        if ($request->expectsJson()) {
+            if ($existingPivot) {
+                
+                return response()->json([
+                    'message' => 'El item ya estaba en tu colección.',
+                    'user_list_item_id' => $existingPivot->pivot->id 
+                ], 200); 
+            }
+
+            $user->items()->attach($item->id, ['status' => 'Pendiente']);
+            $pivotId = $user->items()->where('item_id', $item->id)->first()->pivot->id;
+
+            return response()->json([
+                'message' => '¡' . $item->title . ' ha sido añadido a tu lista!',
+                'user_list_item_id' => $pivotId 
+            ]);
+        }
+
+        if ($existingPivot) {
+            return back()->with('info', '¡' . $item->title . ' ya estaba en tu colección!');
+        } else {
+            $user->items()->attach($item->id, ['status' => 'Pendiente']);
+            return back()->with('success', '¡' . $item->title . ' ha sido añadido a tu lista!');
+        }
+    }
+
     public function update(Request $request, ItemUser $userListItem){ 
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        
         if ($userListItem->user_id !== $user->id) {
             return redirect()->route('user-list.index')->with('error', 'No tienes permiso para actualizar esta entrada.');
         }
-
         
         $maxEpisodes = $userListItem->item->episodes ?? 1000; 
-
         $validated = $request->validate([
             'status' => 'required|string|in:Pendiente,Jugando,Completado,Abandonado',
             'score' => 'nullable|integer|min:1|max:10',
@@ -148,15 +136,12 @@ class UserListItemController extends Controller
                 $validated['episodes_watched'] = $userListItem->item->episodes; 
             }
         }
-        
         $userListItem->update($validated); 
-
         $user->activities()->create([
             'type' => 'updated_list_item',
             'subject_id' => $userListItem->item->id,  
             'subject_type' => Item::class, 
         ]);
-
         return redirect()->route('user-list.edit', $userListItem->id)->with('success', '¡' . $userListItem->item->title . ' ha sido actualizado en tu lista!');
     }
 

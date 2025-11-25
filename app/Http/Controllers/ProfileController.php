@@ -22,31 +22,24 @@ class ProfileController extends Controller
         ]);
     }
 
-
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
-
-        
         $user->fill($request->validated());
-
         
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
-
         
         if ($request->hasFile('avatar')) {
             
             $request->validate([
                 'avatar' => 'image|mimes:jpg,jpeg,png|max:2048',
             ]);
-
             
             if ($user->avatar_path) {
                 Storage::disk('public')->delete($user->avatar_path);
             }
-
 
             $path = $request->file('avatar')->store('avatars', 'public');
             $user->avatar_path = $path;
