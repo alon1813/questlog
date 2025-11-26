@@ -33,6 +33,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+// Route::middleware(['auth', 'verified'])->group(function () {
+//     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// });
+
 Route::middleware(['auth', 'can:manage-posts'])->group(function () {
     
     Route::get('/admin/posts', [PostController::class, 'adminIndex'])->name('posts.admin.index');
