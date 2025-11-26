@@ -155,7 +155,7 @@ class ShoppingCart extends Component
 
             // 6. Redirigir a la página de confirmación
             session()->flash('success', '¡Tu compra ha sido procesada con éxito!');
-            return $this->redirect(route('checkout.confirmation', $order), navigate: true); // navigate: true para Livewire 3
+            return $this->redirect(route('checkout.confirmation', $order), navigate: true); 
 
         } catch (\Exception $e) {
             DB::rollBack();

@@ -2,65 +2,52 @@
 
 namespace App\Mail;
 
-
 use App\Models\Order;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Mail\Mailables\Attachment; // ¡Añadir este use!
+use Illuminate\Mail\Mailables\Attachment;
 
 class OrderConfirmationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public Order $order;
-    public string $invoicePath; // Para adjuntar el PDF
+    public string $invoicePath;
 
-    /**
-     * Create a new message instance.
-     */
     public function __construct(Order $order, string $invoicePath)
     {
-        $this->order = $order->load('items.product'); // Cargar relaciones para el email
+        $this->order = $order->load('items.product');
         $this->invoicePath = $invoicePath;
     }
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Confirmación de Pedido #' . $this->order->order_number . ' - QuestLog',
+            subject: '✅ Confirmación de Pedido #' . $this->order->order_number . ' - QuestLog',
+            
+            replyTo: ['soporte@questlog.com'],
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(
             markdown: 'emails.orders.confirmation',
             with: [
                 'order' => $this->order,
+                'userName' => $this->order->user->name, 
             ],
         );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
     public function attachments(): array
     {
         return [
             Attachment::fromPath($this->invoicePath)
-                ->as('factura-{{ $this->order->order_number }}.pdf')
+                ->as('factura-' . $this->order->order_number . '.pdf')
                 ->withMime('application/pdf'),
         ];
     }
