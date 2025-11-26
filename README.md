@@ -1,6 +1,6 @@
 # 🛡️ Questlog
 
-![Logo Questlog](public/images/logo.png)
+![Logo Questlog](public/images/logo4.png)
 
 **Questlog** es una plataforma social para *gamers* y *otakus* que permite llevar un registro detallado de videojuegos y animes, interactuar con una comunidad y gestionar colecciones personales. Combina lo mejor de una red social con bases de datos especializadas.
 
