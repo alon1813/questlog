@@ -1,4 +1,40 @@
+{{-- resources/views/dashboard.blade.php --}}
 <x-app-layout>
+    {{-- Mensaje si ya estaba verificado --}}
+    @if (request()->has('already') && request()->get('already') == 'true')
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-4">
+            <div class="bg-blue-500 text-white px-6 py-4 rounded-lg shadow-lg">
+                <p class="font-bold text-lg">ℹ️ Tu email ya estaba verificado</p>
+                <p>Tu cuenta está completamente activa.</p>
+            </div>
+        </div>
+    @endif
+
+    {{-- Mensaje de verificación exitosa --}}
+    @if (request()->has('welcome') && request()->get('welcome') == 'sent')
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-4">
+            <div class="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg">
+                <p class="font-bold text-lg">✅ ¡Email verificado con éxito!</p>
+                <p>Tu cuenta ya está completamente activa. Te hemos enviado un email de bienvenida 🎮</p>
+                <p class="text-sm mt-2">Revisa tu bandeja de entrada (y la carpeta de spam, por si acaso).</p>
+            </div>
+        </div>
+    @endif
+
+    {{-- Banner de verificación pendiente --}}
+    @if (auth()->user() && !auth()->user()->hasVerifiedEmail())
+        <div class="bg-yellow-500 text-white px-4 py-3 text-center">
+            <p class="font-bold">⚠️ Por favor, verifica tu email</p>
+            <p class="text-sm">Te hemos enviado un enlace de verificación a <strong>{{ auth()->user()->email }}</strong></p>
+            <form method="POST" action="{{ route('verification.send') }}" class="inline">
+                @csrf
+                <button type="submit" class="underline hover:text-gray-200 text-sm mt-2">
+                    ¿No lo recibiste? Reenviar email de verificación
+                </button>
+            </form>
+        </div>
+    @endif
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
@@ -11,14 +47,13 @@
                     <h2 class="text-2xl font-bold mb-6 text-[var(--text-primary)]">Feed de Actividad</h2> 
                     <div class="space-y-4">
                         @forelse ($activities as $activity)
-                            <div class="flex gap-4 bg-[var(--bg-secondary)] p-4 rounded-lg border-l-4 border-[var(--border-color)] shadow-md"> 
+                            <div class="flex gap-4 bg-[var(--bg-secondary)] p-4 rounded-lg border-l-4 border-[var(--border-color)] shadow-md">
                                 <a href="{{ route('profiles.show', $activity->user) }}">
                                     <img class="h-12 w-12 rounded-full object-cover" 
                                     src="{{ $activity->user->avatar_path ? asset('storage/' . $activity->user->avatar_path) : asset('images/default-avatar.png') }}" 
                                     alt="Avatar de {{ $activity->user->name ?? 'Usuario Anónimo' }}">
                                 </a>
                                 <div class="w-full">
-                                    
                                     @if(view()->exists("dashboard.activities._{$activity->type}"))
                                         @include("dashboard.activities._{$activity->type}", ['activity' => $activity])
                                     @else
@@ -31,7 +66,7 @@
                                 </div>
                             </div>
                         @empty
-                            <div class="bg-[var(--bg-secondary)] p-6 rounded-lg text-center shadow-lg"> 
+                            <div class="bg-[var(--bg-secondary)] p-6 rounded-lg text-center shadow-lg">
                                 <p class="text-[var(--text-secondary)]">Todavía no hay actividad en la plataforma. ¡Sé el primero!</p>
                             </div>
                         @endforelse
@@ -43,12 +78,13 @@
                         <img class="h-20 w-20 rounded-full mx-auto mb-2 border-2 border-[var(--text-primary)] object-cover" 
                             src="{{ Auth::user()->avatar_path ? asset('storage/' . Auth::user()->avatar_path) : asset('images/default-avatar.png') }}" 
                             alt="Avatar de {{ Auth::user()->name }}">
-                        <h4 class="font-bold text-lg text-[var(--text-primary)] mb-2">{{ Auth::user()->name }}</h4> 
-                        <a href="{{ route('profile.edit') }}" class="text-sm text-[var(--text-secondary)] hover:underline">Ver Perfil Completo</a> 
+                        <h4 class="font-bold text-lg text-[var(--text-primary)] mb-2">{{ Auth::user()->name }}</h4>
+                        <a href="{{ route('profile.edit') }}" class="text-sm text-[var(--text-secondary)] hover:underline">Ver Perfil Completo</a>
                     </div>
+
                     <div class="bg-[var(--bg-secondary)] p-6 rounded-lg shadow-lg border border-[var(--border-color)]">
-                        <h4 class="font-bold text-[var(--text-primary)] mb-4">Mi Progreso</h4> 
-                        <ul class="space-y-2 text-sm text-[var(--text-secondary)]"> 
+                        <h4 class="font-bold text-[var(--text-primary)] mb-4">Mi Progreso</h4>
+                        <ul class="space-y-2 text-sm text-[var(--text-secondary)]">
                             <li class="flex justify-between"><span>Jugando actualmente:</span> <strong class="text-white">{{ $stats['playing'] }}</strong></li>
                             <li class="flex justify-between"><span>Viendo esta temporada:</span> <strong class="text-white">{{ $stats['watching'] }}</strong></li>
                             <li class="flex justify-between"><span>Completados (Total):</span> <strong class="text-white">{{ $stats['completed'] }}</strong></li>
@@ -56,27 +92,26 @@
                     </div>
 
                     <div class="bg-[var(--bg-secondary)] p-6 rounded-lg shadow-lg border border-[var(--border-color)]">
-                        <h4 class="font-bold text-[var(--text-primary)] mb-4">Tendencias de la Semana</h4> 
+                        <h4 class="font-bold text-[var(--text-primary)] mb-4">Tendencias de la Semana</h4>
                         <ul class="space-y-3">
                             @forelse ($trendingItems as $item)
                                 <li class="flex items-center gap-3">
                                     <img src="{{ $item->cover_image_url ?? asset('images/default-game-cover.png') }}" 
                                             alt="{{ $item->title }}" 
-                                            class="w-10 h-14 object-cover rounded flex-shrink-0"> 
-                                    <div class="text-sm text-[var(--text-secondary)]">{{ $item->title }} ({{ $item->additions_count }} adiciones)</div> 
+                                            class="w-10 h-14 object-cover rounded flex-shrink-0">
+                                    <div class="text-sm text-[var(--text-secondary)]">{{ $item->title }} ({{ $item->additions_count }} adiciones)</div>
                                 </li>
                             @empty
                                 <p class="text-sm text-gray-400">No hay suficientes datos para mostrar tendencias.</p>
                             @endforelse
                         </ul>
                     </div>
-                    {{-- Widget "Últimas Noticias" (Puedes añadir esto si tienes un controlador y rutas para noticias en el dashboard) --}}
+
                     <div class="bg-[var(--bg-secondary)] p-6 rounded-lg shadow-lg border border-[var(--border-color)]">
                         <h4 class="text-xl font-bold text-[var(--text-primary)] mb-4">Últimas Noticias</h4>
                         <ul class="space-y-2 text-[var(--text-secondary)]">
                             <li><a href="#" class="hover:text-[var(--text-primary)] hover:underline text-sm">Los 10 RPGs que no te puedes perder</a></li>
                             <li><a href="#" class="hover:text-[var(--text-primary)] hover:underline text-sm">Análisis de la temporada de anime</a></li>
-                            {{-- Aquí irían las noticias reales si las tuvieras en $latestNews --}}
                         </ul>
                     </div>
                 </aside>

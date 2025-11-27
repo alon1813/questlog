@@ -6,7 +6,6 @@ use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log; 
 use App\Models\Pivots\ItemUser; 
 
 class UserListItemController extends Controller
@@ -66,7 +65,7 @@ class UserListItemController extends Controller
         ]);
     }
 
-     public function store(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'api_id' => 'required|integer',
