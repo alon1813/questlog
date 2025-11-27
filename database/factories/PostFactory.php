@@ -23,7 +23,7 @@ class PostFactory extends Factory
             'title' => fake()->sentence(4),
             'body' => fake()->paragraphs(5, true),
             'image_url' => null,
-            'status' => 'published', //todos los posts creados con la factory son publicados
+            'status' => 'published', 
         ];
     }
 }

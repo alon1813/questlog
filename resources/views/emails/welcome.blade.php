@@ -12,9 +12,9 @@ Aquí hay algunas cosas que puedes hacer:
 - **👥 Sigue a otros usuarios** - Descubre qué están jugando/viendo
 - **🛒 Visita la tienda** - Encuentra merchandising exclusivo
 
-@component('mail::button', ['url' => route('dashboard')])
+<x-mail::button :url="route('dashboard')">
 Ir a Mi Dashboard
-@endcomponent
+</x-mail::button>
 
 Si tienes alguna pregunta, no dudes en contactarnos.
 
