@@ -17,7 +17,6 @@ class FollowButton extends Component
         /** @var \App\Models\User $currentUser */ 
         $currentUser = Auth::user();
 
-        
         $this->isFollowing = $currentUser->isFollowing($this->user);
     }
 

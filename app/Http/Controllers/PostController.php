@@ -60,8 +60,6 @@ class PostController extends Controller
             'subject_type' => Post::class,
         ]);
 
-        $request->user()->posts()->create($validated);
-
         return redirect()->route('profile.edit')->with('success', 'Post creado con éxito.');
     }
 

@@ -1,16 +1,4 @@
-{{-- resources/views/dashboard.blade.php --}}
 <x-app-layout>
-    {{-- Mensaje si ya estaba verificado --}}
-    @if (request()->has('already') && request()->get('already') == 'true')
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-4">
-            <div class="bg-blue-500 text-white px-6 py-4 rounded-lg shadow-lg">
-                <p class="font-bold text-lg">ℹ️ Tu email ya estaba verificado</p>
-                <p>Tu cuenta está completamente activa.</p>
-            </div>
-        </div>
-    @endif
-
-    {{-- Mensaje de verificación exitosa --}}
     @if (request()->has('welcome') && request()->get('welcome') == 'sent')
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-4">
             <div class="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg">
@@ -18,20 +6,6 @@
                 <p>Tu cuenta ya está completamente activa. Te hemos enviado un email de bienvenida 🎮</p>
                 <p class="text-sm mt-2">Revisa tu bandeja de entrada (y la carpeta de spam, por si acaso).</p>
             </div>
-        </div>
-    @endif
-
-    {{-- Banner de verificación pendiente --}}
-    @if (auth()->user() && !auth()->user()->hasVerifiedEmail())
-        <div class="bg-yellow-500 text-white px-4 py-3 text-center">
-            <p class="font-bold">⚠️ Por favor, verifica tu email</p>
-            <p class="text-sm">Te hemos enviado un enlace de verificación a <strong>{{ auth()->user()->email }}</strong></p>
-            <form method="POST" action="{{ route('verification.send') }}" class="inline">
-                @csrf
-                <button type="submit" class="underline hover:text-gray-200 text-sm mt-2">
-                    ¿No lo recibiste? Reenviar email de verificación
-                </button>
-            </form>
         </div>
     @endif
 

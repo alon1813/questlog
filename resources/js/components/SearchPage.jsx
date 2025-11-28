@@ -6,7 +6,6 @@ import SearchIcon from "./icons/SearchIcon";
 import AddIcon from "./icons/AddIcon";
 import RemoveIcon from "./icons/RemoveIcon";
 
-
 export default function SearchPage() {
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
@@ -27,7 +26,6 @@ export default function SearchPage() {
             .catch(() => setResults([]))
             .finally(() => setLoading(false));
     };
-
 
     useEffect(() => {
         if (query.length < 2) {

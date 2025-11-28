@@ -35,6 +35,7 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Rol</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Estado</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Avisos</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Acciones</th>
                             </tr>
                         </thead>
@@ -48,7 +49,6 @@
                                         {{ $user->email }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        
                                         <select 
                                             wire:key="role-select-{{ $user->id }}"
                                             wire:change="changeRole({{ $user->id }}, $event.target.value)" 
@@ -61,7 +61,6 @@
                                         </select>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        
                                         <select 
                                             wire:key="status-select-{{ $user->id }}"
                                             wire:change="changeStatus({{ $user->id }}, $event.target.value)" 
@@ -74,7 +73,16 @@
                                         </select>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        
+                                        @if($user->warnings_count > 0)
+                                            <span class="px-2 py-1 text-xs font-bold rounded-full 
+                                                {{ $user->warnings_count >= 3 ? 'bg-red-600 text-white' : 'bg-yellow-500 text-black' }}">
+                                                ⚠️ {{ $user->warnings_count }}/3
+                                            </span>
+                                        @else
+                                            <span class="text-gray-400">Sin avisos</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         <button 
                                             wire:key="delete-btn-{{ $user->id }}"
                                             wire:click="deleteUser({{ $user->id }})" 
@@ -86,7 +94,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-center">
+                                    <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300 text-center">
                                         No se encontraron usuarios que coincidan con la búsqueda.
                                     </td>
                                 </tr>

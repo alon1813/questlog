@@ -146,7 +146,7 @@ export default function NotificationsBell() {
                                     <a 
                                         key={n.id} 
                                         href={getNotificationLink(n)}
-                                        onClick={() => setShowDropdown(false)} // Opcional: cierra el menú al hacer clic
+                                        onClick={() => setShowDropdown(false)} 
                                         className={`block px-4 py-3 text-sm border-b dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
                                             !n.read_at ? 'bg-blue-50 dark:bg-gray-900' : ''
                                         }`}

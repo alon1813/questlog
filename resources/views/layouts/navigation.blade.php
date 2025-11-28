@@ -68,6 +68,10 @@
                                 {{ __('Carrito') }}
                             </x-dropdown-link>
 
+                            <x-dropdown-link :href="route('posts.create')">
+                                {{ __('Crear Noticia') }}
+                            </x-dropdown-link>
+
                             @can('manage-posts')
                                 <x-dropdown-link :href="route('posts.admin.index')">{{ __('Gestionar Noticias') }}</x-dropdown-link>
                                 <x-dropdown-link :href="route('admin.comments.index')">{{ __('Moderar Comentarios') }}</x-dropdown-link>
@@ -172,6 +176,10 @@
 
                         <x-responsive-nav-link :href="route('wishlist.index')">
                             {{ __('Carrito') }}
+                        </x-responsive-nav-link>
+
+                        <x-responsive-nav-link :href="route('posts.create')">
+                            {{ __('Crear Noticia') }}
                         </x-responsive-nav-link>
 
                         @can('manage-posts')

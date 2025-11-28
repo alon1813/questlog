@@ -23,7 +23,6 @@ class WishlistController extends Controller
         return view('wishlist.index');
     }
 
-    
     public function add(Product $product)
     {
         
@@ -44,7 +43,6 @@ class WishlistController extends Controller
         return back()->with('success', 'Producto añadido al carrito.');
     }
 
-    
     public function remove(Request $request, Product $product){
         $request->user()->wishlistProducts()->detach($product->id);
         return back()->with('success', 'Producto eliminado de la lista de deseos.');    
@@ -146,12 +144,10 @@ class WishlistController extends Controller
 
             DB::commit(); 
 
-            
             $order->load('user', 'items.product'); 
             $pdf = PDF::loadView('invoices.order', ['order' => $order]);
             $invoiceFileName = 'factura-' . $order->order_number . '.pdf';
 
-            
             if (!Storage::disk('public')->exists('invoices')) {
                 Storage::disk('public')->makeDirectory('invoices');
             }
@@ -160,7 +156,6 @@ class WishlistController extends Controller
             // Enviar Email de confirmación con el PDF adjunto
             Mail::to($user->email)->send(new OrderConfirmationMail($order, Storage::disk('public')->path('invoices/' . $invoiceFileName)));
             
-
             return redirect()->route('checkout.confirmation', $order)->with('success', '¡Tu pedido ha sido procesado con éxito!');
 
         } catch (\Exception $e) {
