@@ -10,7 +10,10 @@ class NotificationApiController extends Controller
     public function index(Request $request)
     {
         if (!$request->user()) {
-            return response()->json(['error' => 'No autenticado'], 401);
+            return response()->json([
+                'error' => 'No autenticado',
+                'message' => 'Debes iniciar sesión para ver notificaciones'
+            ], 401);
         }
         $user = $request->user();
 

@@ -18,7 +18,9 @@ class PostController extends Controller
     {
 
         $post->load(['comments' =>function($query){
-            $query->where('status', 'visible')->latest();
+            $query->where('status', 'visible')
+            ->with('user:id,name,username,avatar_path')
+            ->latest();
 
         }, 'comments.user']);
 

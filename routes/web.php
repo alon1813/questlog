@@ -49,7 +49,7 @@ Route::middleware(['auth', 'can:manage-posts'])->group(function () {
 
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'throttle:60,1')->group(function () {
     
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::get('/search', [SearchController::class, 'index'])->name('search.index');

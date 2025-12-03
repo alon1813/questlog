@@ -38,14 +38,26 @@ class UserListItemController extends Controller
         }
         $itemId = $userListItem->item_id; 
 
+        // $publicReviews = ItemUser::query()
+        //                         ->with(['user', 'helpfulVotes']) 
+        //                         ->where('item_id', $itemId) 
+        //                         ->whereNotNull('review')
+        //                         ->where('review', '!=', '')
+        //                         ->where('user_id', '!=', $user->id) 
+        //                         ->latest('updated_at')
+        //                         ->paginate(1); 
         $publicReviews = ItemUser::query()
-                                ->with(['user', 'helpfulVotes']) 
-                                ->where('item_id', $itemId) 
-                                ->whereNotNull('review')
-                                ->where('review', '!=', '')
-                                ->where('user_id', '!=', $user->id) 
-                                ->latest('updated_at')
-                                ->paginate(1); 
+        ->with([
+            'user:id,name,username,avatar_path', 
+            'helpfulVotes:id' 
+        ])
+        ->where('item_id', $itemId)
+        ->whereNotNull('review')
+        ->where('review', '!=', '')
+        ->where('user_id', '!=', $user->id)
+        ->withCount('helpfulVotes') 
+        ->latest('updated_at')
+        ->paginate(1);
 
         $averageScoreData = DB::table('item_user')
                                 ->where('item_id', $itemId) 

@@ -12,7 +12,10 @@ class DashboardController extends Controller
 
     public function index(Request $request){
         $user = $request->user();
-        $activities = Activity::with('user', 'subject')->latest()->take(20)->get();
+        $activities = Activity::with([
+            'user:id,name,username,avatar_path',
+            'subject'
+        ])->latest()->take(20)->get();
 
         $stats = [
             'playing' => $user->items()->where('type', 'game')->wherePivot('status', 'Jugando')->count(),

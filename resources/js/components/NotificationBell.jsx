@@ -87,7 +87,7 @@ export default function NotificationsBell() {
         
         const intervalId = setInterval(() => {
             fetchNotifications();
-        }, 5000);
+        }, 30000);
 
         return () => clearInterval(intervalId);
     }, []);

@@ -18,11 +18,23 @@ class LandingPageController extends Controller
             
         } else {
             
-            $recentActivities = Activity::with('user', 'subject') 
-                                    ->whereIn('type', ['created_post', 'updated_list_item']) 
-                                    ->latest() 
-                                    ->limit(3) 
-                                    ->get();
+            // $recentActivities = Activity::with('user', 'subject') 
+            //                         ->whereIn('type', ['created_post', 'updated_list_item']) 
+            //                         ->latest() 
+            //                         ->limit(3) 
+            //                         ->get();
+
+            $recentActivities = Activity::with([
+                'user:id,name,username,avatar_path',
+                'subject' => function ($query) {
+                    // Carga diferente según el tipo
+                    $query->select('id', 'title');
+                }
+            ])
+            ->whereIn('type', ['created_post', 'updated_list_item'])
+            ->latest()
+            ->limit(3)
+            ->get();
         }
 
         $popularItems = [
