@@ -17,17 +17,10 @@ class LandingPageController extends Controller
             $user = Auth::user();
             
         } else {
-            
-            // $recentActivities = Activity::with('user', 'subject') 
-            //                         ->whereIn('type', ['created_post', 'updated_list_item']) 
-            //                         ->latest() 
-            //                         ->limit(3) 
-            //                         ->get();
 
             $recentActivities = Activity::with([
                 'user:id,name,username,avatar_path',
                 'subject' => function ($query) {
-                    // Carga diferente según el tipo
                     $query->select('id', 'title');
                 }
             ])
@@ -73,7 +66,6 @@ class LandingPageController extends Controller
                 'image_url' => 'https://cdn11.bigcommerce.com/s-hfy8688lak/images/stencil/1280x1280/products/2593/13618/FFVII_RB_AG_US__97253.1702580872.jpg?c=1', 
                 'link' => '#'
             ],
-            // --- NUEVAS ADICIONES ---
             (object)[
                 'id' => 6, 
                 'title' => 'Elden Ring', 

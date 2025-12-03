@@ -19,67 +19,172 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
 use App\Livewire\Admin\UserManagement;
 
+// ============================================================================
+// RUTAS PÚBLICAS
+// ============================================================================
+
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('dashboard');
     }
-    
     return app(LandingPageController::class)->index();
 })->name('home');
+
+Route::get('/usuarios/{user:username}', [UserProfileController::class, 'show'])
+    ->name('profiles.show');
+
+Route::get('/tienda', [ShopController::class, 'index'])
+    ->name('shop.index');
+
+// ============================================================================
+// RUTAS DE AUTENTICACIÓN
+// ============================================================================
+
+require __DIR__.'/auth.php';
+
+// ============================================================================
+// DASHBOARD (Requiere autenticación + email verificado)
+// ============================================================================
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-// Route::middleware(['auth', 'verified'])->group(function () {
-//     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-// });
+// ============================================================================
+// RUTAS DE ADMINISTRACIÓN (Solo Admin)
+// ============================================================================
 
 Route::middleware(['auth', 'can:manage-posts'])->group(function () {
+    // Gestión de Posts
+    Route::get('/admin/posts', [PostController::class, 'adminIndex'])
+        ->name('posts.admin.index');
+    Route::get('posts/{post}/editar', [PostController::class, 'edit'])
+        ->name('posts.edit');
+    Route::put('posts/{post}', [PostController::class, 'update'])
+        ->name('posts.update');
+    Route::delete('posts/{post}', [PostController::class, 'destroy'])
+        ->name('posts.destroy');
+    Route::patch('/admin/posts/{post}/status', [PostController::class, 'updateStatus'])
+        ->name('posts.admin.updateStatus');
     
-    Route::get('/admin/posts', [PostController::class, 'adminIndex'])->name('posts.admin.index');
-    Route::get('posts/{post}/editar', [PostController::class, 'edit'])->name('posts.edit');
-    Route::put('posts/{post}', [PostController::class, 'update'])->name('posts.update');
-    Route::delete('posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
-    Route::patch('/admin/posts/{post}/status', [PostController::class, 'updateStatus'])->name('posts.admin.updateStatus');
-    Route::get('/admin/comentarios', [AdminCommentController::class, 'index'])->name('admin.comments.index');
-    Route::patch('/admin/comentarios/{comment}/status', [AdminCommentController::class, 'updateStatus'])->name('admin.comments.updateStatus');
-    Route::delete('/admin/comentarios{comment}', [AdminCommentController::class, 'destroy'])->name('admin.comments.destroy');
-    Route::get('/admin/users', UserManagement::class)->name('admin.users.index');
-
+    // Gestión de Comentarios
+    Route::get('/admin/comentarios', [AdminCommentController::class, 'index'])
+        ->name('admin.comments.index');
+    Route::patch('/admin/comentarios/{comment}/status', [AdminCommentController::class, 'updateStatus'])
+        ->name('admin.comments.updateStatus');
+    Route::delete('/admin/comentarios/{comment}', [AdminCommentController::class, 'destroy'])
+        ->name('admin.comments.destroy');
+    
+    // Gestión de Usuarios
+    Route::get('/admin/users', UserManagement::class)
+        ->name('admin.users.index');
 });
 
-Route::middleware('auth', 'throttle:60,1')->group(function () {
+// ============================================================================
+// RUTAS AUTENTICADAS - LECTURA (Sin rate limiting estricto)
+// ============================================================================
+
+Route::middleware('auth')->group(function () {
+    // Perfil
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
     
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::get('/search', [SearchController::class, 'index'])->name('search.index');
-    Route::get('/posts/crear', [PostController::class, 'create'])->name('posts.create');
-    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
-    Route::post('/mi-lista/guardar', [UserListItemController::class, 'store'])->name('user-list.store');
-    Route::get('mi-lista/{userListItem}/edit', [UserListItemController::class, 'edit'])->name('user-list.edit');
-    Route::put('mi-lista/{userListItem}', [UserListItemController::class, 'update'])->name('user-list.update');
-    Route::delete('/mi-lista/{userListItem}', [UserListItemController::class, 'destroy'])->name('user-list.destroy');
-    Route::post('/noticias/{post}/comentarios', [CommentController::class, 'store'])->name('comments.store');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/noticias', [PostController::class, 'index'])->name('posts.index');
-    Route::get('/noticias/{post}', [PostController::class, 'show'])->name('posts.show');
-    Route::get('/mi-lista', [UserListItemController::class, 'index'])->name('user-list.index');
-    Route::get('/mi-lista-deseos', [WishlistController::class, 'index'])->name('wishlist.index');
-    Route::post('/mi-lista-deseos/{product}', [WishlistController::class, 'add'])->name('wishlist.add');
-    Route::delete('/mi-lista-deseos/{product}', [WishlistController::class, 'remove'])->name('wishlist.remove');
-    Route::post('/usuarios/{user}/follow', [FollowController::class, 'follow'])->name('users.follow');
-    Route::delete('/usuarios/{user}/unfollow', [FollowController::class, 'unfollow'])->name('users.unfollow');
-    Route::get('/notificaciones', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::get('/internal/notifications', [NotificationApiController::class, 'index'])->name('internal.notifications.index');
-    Route::post('/internal/notifications/mark-as-read', [NotificationApiController::class, 'markAsRead'])->name('internal.notifications.markAsRead');
-    Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
-    Route::get('/checkout/summary', [WishlistController::class, 'checkoutSummary'])->name('checkout.summary');
-    Route::post('/checkout/process', [WishlistController::class, 'processCheckout'])->name('checkout.process');
-    Route::get('/checkout/confirmation/{order}', [WishlistController::class, 'orderConfirmation'])->name('checkout.confirmation');
-    Route::get('/checkout/invoice/{order}/pdf', [WishlistController::class, 'downloadInvoicePdf'])->name('checkout.invoice.pdf');
+    // Posts/Noticias
+    Route::get('/noticias', [PostController::class, 'index'])
+        ->name('posts.index');
+    Route::get('/noticias/{post}', [PostController::class, 'show'])
+        ->name('posts.show');
+    Route::get('/posts/crear', [PostController::class, 'create'])
+        ->name('posts.create');
+    Route::post('/posts', [PostController::class, 'store'])
+        ->name('posts.store');
+    
+    // Mi Lista/Colección
+    Route::get('/mi-lista', [UserListItemController::class, 'index'])
+        ->name('user-list.index');
+    Route::get('mi-lista/{userListItem}/edit', [UserListItemController::class, 'edit'])
+        ->name('user-list.edit');
+    Route::put('mi-lista/{userListItem}', [UserListItemController::class, 'update'])
+        ->name('user-list.update');
+    
+    // Carrito/Wishlist
+    Route::get('/mi-lista-deseos', [WishlistController::class, 'index'])
+        ->name('wishlist.index');
+    
+    // Checkout
+    Route::get('/checkout/summary', [WishlistController::class, 'checkoutSummary'])
+        ->name('checkout.summary');
+    Route::get('/checkout/confirmation/{order}', [WishlistController::class, 'orderConfirmation'])
+        ->name('checkout.confirmation');
+    Route::get('/checkout/invoice/{order}/pdf', [WishlistController::class, 'downloadInvoicePdf'])
+        ->name('checkout.invoice.pdf');
+    
+    // Notificaciones
+    Route::get('/notificaciones', [NotificationController::class, 'index'])
+        ->name('notifications.index');
+    
+    // Items
+    Route::get('/items/{item}', [ItemController::class, 'show'])
+        ->name('items.show');
 });
 
-Route::get('/usuarios/{user:username}', [UserProfileController::class, 'show'])->name('profiles.show');
-Route::get('/tienda', [ShopController::class, 'index'])->name('shop.index');
-require __DIR__.'/auth.php';
+// ============================================================================
+// API DE NOTIFICACIONES (60 peticiones/minuto)
+// ============================================================================
+
+Route::middleware(['auth', 'throttle:60,1'])->group(function () {
+    Route::get('/internal/notifications', [NotificationApiController::class, 'index'])
+        ->name('internal.notifications.index');
+    Route::post('/internal/notifications/mark-as-read', [NotificationApiController::class, 'markAsRead'])
+        ->name('internal.notifications.markAsRead');
+});
+
+// ============================================================================
+// BÚSQUEDA (30 peticiones/minuto - Protege API externa)
+// ============================================================================
+
+Route::middleware(['auth', 'throttle:30,1'])->group(function () {
+    Route::get('/search', [SearchController::class, 'index'])
+        ->name('search.index');
+});
+
+// ============================================================================
+// CHECKOUT (20 peticiones/minuto - Proceso crítico)
+// ============================================================================
+
+Route::middleware(['auth', 'throttle:20,1'])->group(function () {
+    Route::post('/checkout/process', [WishlistController::class, 'processCheckout'])
+        ->name('checkout.process');
+});
+
+// ============================================================================
+// ACCIONES DE ESCRITURA (100 peticiones/minuto - Previene spam)
+// ============================================================================
+
+Route::middleware(['auth', 'throttle:100,1'])->group(function () {
+    // Colección
+    Route::post('/mi-lista/guardar', [UserListItemController::class, 'store'])
+        ->name('user-list.store');
+    Route::delete('/mi-lista/{userListItem}', [UserListItemController::class, 'destroy'])
+        ->name('user-list.destroy');
+    
+    // Carrito/Wishlist
+    Route::post('/mi-lista-deseos/{product}', [WishlistController::class, 'add'])
+        ->name('wishlist.add');
+    Route::delete('/mi-lista-deseos/{product}', [WishlistController::class, 'remove'])
+        ->name('wishlist.remove');
+    
+    // Social (Follow/Unfollow)
+    Route::post('/usuarios/{user}/follow', [FollowController::class, 'follow'])
+        ->name('users.follow');
+    Route::delete('/usuarios/{user}/unfollow', [FollowController::class, 'unfollow'])
+        ->name('users.unfollow');
+    
+    // Comentarios
+    Route::post('/noticias/{post}/comentarios', [CommentController::class, 'store'])
+        ->name('comments.store');
+});

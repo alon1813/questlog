@@ -1,5 +1,4 @@
 <?php
-// app/Notifications/AccountWarningNotification.php
 
 namespace App\Notifications;
 
