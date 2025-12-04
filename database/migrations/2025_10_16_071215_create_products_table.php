@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('price', 8, 2);
             $table->string('image_url');
-            $table->string('affiliate_url'); // URL de afiliado
+            $table->string('affiliate_url'); 
             $table->string('category')->nullable();
             $table->timestamps();
         });

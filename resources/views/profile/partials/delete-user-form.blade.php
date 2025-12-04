@@ -5,7 +5,10 @@
         </h2>
 
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
+            {{ __('⚠️ Advertencia: Al eliminar tu cuenta se eliminarán permanentemente') }}
+        </p>
+        <p class="mt-2 text-sm text-red-600 dark:text-red-400 font-bold">
+            {{ __('Esta acción NO se puede deshacer.') }}
         </p>
     </header>
 

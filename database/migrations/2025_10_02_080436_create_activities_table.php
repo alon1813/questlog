@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->morphs('subject'); //crea las columnas subject_id y subject_type
-            $table->string('type'); //tipo de actividad ('post_created', 'item_added')
+            $table->morphs('subject'); 
+            $table->string('type'); 
             $table->timestamps();
         });
     }

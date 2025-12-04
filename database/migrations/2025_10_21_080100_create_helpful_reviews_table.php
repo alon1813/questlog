@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('helpful_reviews', function (Blueprint $table) {
             $table->id();
-            // Usamos unsignedBigInteger porque los IDs de las tablas pivote pueden ser grandes
             $table->unsignedBigInteger('review_id');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();

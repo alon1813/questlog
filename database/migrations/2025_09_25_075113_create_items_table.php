@@ -13,13 +13,11 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
-
-            //DATOS QUE OBTENDREMOS DE LA API EXTERNA
-            $table->unsignedBigInteger('api_id')->unique(); //ID del item en la API externa
-            $table->string('type'); //game o anime
-            $table->string('title'); //titulo del item
-            $table->string('cover_image_url'); //url de la imagen del item
-            $table->text('synopsis')->nullable(); //sinopsis del item
+            $table->unsignedBigInteger('api_id')->unique(); 
+            $table->string('type'); 
+            $table->string('title'); 
+            $table->string('cover_image_url'); 
+            $table->text('synopsis')->nullable(); 
             
             $table->timestamps();
         });

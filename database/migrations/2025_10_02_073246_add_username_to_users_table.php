@@ -12,8 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Hacemos que pueda ser nulo temporalmente para no tener problemas
-            // con los usuarios existentes, y que sea único.
             $table->string('username')->unique()->nullable()->after('name');
         });
     }
