@@ -7,8 +7,8 @@ export default function NotificationsBell() {
     const [showDropdown, setShowDropdown] = useState(false);
     const [loading, setLoading] = useState(true);
     const dropdownRef = useRef(null);
+    const [pollingInterval, setPollingInterval] = useState(30000);
     
-
     const apiClient = axios.create({
         withCredentials: true,
         headers: {
@@ -17,19 +17,19 @@ export default function NotificationsBell() {
         }
     });
 
-    const getNotificationLink = (notifications) =>{
+    const getNotificationLink = (notifications) => {
         const data = notifications.data;
         
         switch(notifications.type) {
             case 'NewFollowerNotification':
                 return data.follower_username 
-                ? `/usuarios/${data.follower_username}` 
-                : '/notificaciones';
+                    ? `/usuarios/${data.follower_username}` 
+                    : '/notificaciones';
             
             case 'NewCommentNotification':
                 return data.post_id 
-                ? `/noticias/${data.post_id}` 
-                : '/notificaciones';
+                    ? `/noticias/${data.post_id}` 
+                    : '/notificaciones';
             
             case 'NewLikeNotification': 
                 return data.liker_username 
@@ -61,7 +61,7 @@ export default function NotificationsBell() {
             } else {
                 console.error("Error cargando notificaciones:", error);
             }
-        }finally{
+        } finally {
             setLoading(false);
         }
     };
@@ -76,22 +76,6 @@ export default function NotificationsBell() {
         }
     };
 
-    useEffect(() => {
-        const initialize = async () => {
-            await initializeCsrf();
-            await fetchNotifications();
-        };
-
-        initialize();
-
-        
-        const intervalId = setInterval(() => {
-            fetchNotifications();
-        }, 30000);
-
-        return () => clearInterval(intervalId);
-    }, []);
-
     const handleToggleDropdown = () => {
         const newState = !showDropdown;
         setShowDropdown(newState);
@@ -101,7 +85,47 @@ export default function NotificationsBell() {
         }
     };
 
-    
+    useEffect(() => {
+        const initialize = async () => {
+            await initializeCsrf();
+            await fetchNotifications();
+        };
+
+        initialize();
+    }, []); 
+
+    useEffect(() => {
+        let intervalId;
+        
+        const startPolling = () => {
+            intervalId = setInterval(() => {
+                fetchNotifications();
+            }, pollingInterval);
+        };
+        
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                setPollingInterval(120000); 
+                clearInterval(intervalId);
+                startPolling();
+            } else {
+                setPollingInterval(30000);
+                clearInterval(intervalId);
+                startPolling();
+                fetchNotifications();
+            }
+        };
+        
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        startPolling();
+        
+        return () => {
+            clearInterval(intervalId);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+    }, [pollingInterval]);
+
+    // Cerrar dropdown al hacer clic fuera (YA LO TENÍAS BIEN)
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -141,7 +165,7 @@ export default function NotificationsBell() {
                                 <div className="px-4 py-8 flex justify-center">
                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
                                 </div>
-                            ) :notifications.length > 0 ? (
+                            ) : notifications.length > 0 ? (
                                 notifications.map((n) => (
                                     <a 
                                         key={n.id} 
@@ -151,7 +175,6 @@ export default function NotificationsBell() {
                                             !n.read_at ? 'bg-blue-50 dark:bg-gray-900' : ''
                                         }`}
                                     >
-                                        
                                         <div className="flex items-start space-x-3">
                                             <div className="flex-shrink-0 mt-1">
                                                 {n.type === 'NewFollowerNotification' && (

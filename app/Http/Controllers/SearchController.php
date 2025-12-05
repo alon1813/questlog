@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Item; 
 use App\Models\User; 
+use Illuminate\Support\Facades\Cache;
 
 class SearchController extends Controller
 {

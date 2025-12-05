@@ -4,7 +4,6 @@
         
         <h2 class="text-3xl font-bold text-center mb-6">Bienvenido a QuestLog</h2>
 
-        {{-- ✅ Mostrar mensajes de estado (ej: "Te hemos enviado un enlace") --}}
         @if (session('status'))
             <div class="mb-4 p-4 bg-green-900 border border-green-600 text-green-200 rounded-lg text-sm">
                 {{ session('status') }}

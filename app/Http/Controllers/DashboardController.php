@@ -17,11 +17,13 @@ class DashboardController extends Controller
             'subject'
         ])->latest()->take(20)->get();
 
-        $stats = [
-            'playing' => $user->items()->where('type', 'game')->wherePivot('status', 'Jugando')->count(),
-            'watching' => $user->items()->where('type', 'anime')->wherePivot('status', 'Jugando')->count(), 
-            'completed' => $user->items()->wherePivot('status', 'Completado')->count(),
-        ];
+        // $stats = [
+        //     'playing' => $user->items()->where('type', 'game')->wherePivot('status', 'Jugando')->count(),
+        //     'watching' => $user->items()->where('type', 'anime')->wherePivot('status', 'Jugando')->count(), 
+        //     'completed' => $user->items()->wherePivot('status', 'Completado')->count(),
+        // ];
+
+        $stats = $this->getUserStats($user);
         
         $trendingItems = Item::query()
             ->select('items.*', DB::raw('COUNT(item_user.item_id) as additions_count'))
@@ -125,5 +127,52 @@ class DashboardController extends Controller
             'trendingItems' => $trendingItems,
             'popularItems' => $popularItems,
         ]);
+    }
+
+    private function getUserStats($user)
+    {
+        
+        $generalStats = DB::table('item_user')
+            ->select(
+                DB::raw('COUNT(*) as total_items'),
+                DB::raw('SUM(CASE WHEN status = "Completado" THEN 1 ELSE 0 END) as completed'),
+                //DB::raw('AVG(CASE WHEN rating IS NOT NULL THEN rating END) as avg_rating')
+            )
+            ->where('user_id', $user->id)
+            ->first();
+
+        $itemsByTypeAndStatus = DB::table('item_user')
+            ->join('items', 'item_user.item_id', '=', 'items.id')
+            ->select(
+                'items.type',
+                'item_user.status',
+                DB::raw('COUNT(*) as count')
+            )
+            ->where('item_user.user_id', $user->id)
+            ->groupBy('items.type', 'item_user.status')
+            ->get();
+
+        $playing = 0;
+        $watching = 0;
+        
+        foreach ($itemsByTypeAndStatus as $stat) {
+            if ($stat->type === 'game' && $stat->status === 'Jugando') {
+                $playing = $stat->count;
+            }
+            if ($stat->type === 'anime' && $stat->status === 'Jugando') {
+                $watching = $stat->count;
+            }
+        }
+
+        return [
+            'playing' => $playing,
+            'watching' => $watching,
+            'completed' => $generalStats->completed ?? 0,
+            'total_items' => $generalStats->total_items ?? 0,
+            'avg_rating' => round($generalStats->avg_rating ?? 0, 1),
+            'completion_percentage' => $generalStats->total_items > 0 
+                ? round(($generalStats->completed / $generalStats->total_items) * 100) 
+                : 0
+        ];
     }
 }
