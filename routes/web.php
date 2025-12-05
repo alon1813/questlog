@@ -17,11 +17,9 @@ use App\Http\Controllers\Api\NotificationApiController;
 use App\Http\Controllers\LandingPageController; 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
+use App\Livewire\Admin\CommentManagement;
+use App\Livewire\Admin\PostManagement;
 use App\Livewire\Admin\UserManagement;
-
-// ============================================================================
-// RUTAS PÚBLICAS
-// ============================================================================
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -36,27 +34,16 @@ Route::get('/usuarios/{user:username}', [UserProfileController::class, 'show'])
 Route::get('/tienda', [ShopController::class, 'index'])
     ->name('shop.index');
 
-// ============================================================================
-// RUTAS DE AUTENTICACIÓN
-// ============================================================================
-
 require __DIR__.'/auth.php';
-
-// ============================================================================
-// DASHBOARD (Requiere autenticación + email verificado)
-// ============================================================================
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-// ============================================================================
-// RUTAS DE ADMINISTRACIÓN (Solo Admin)
-// ============================================================================
 
 Route::middleware(['auth', 'can:manage-posts'])->group(function () {
     // Gestión de Posts
-    Route::get('/admin/posts', [PostController::class, 'adminIndex'])
+    Route::get('/admin/posts', [PostManagement::class])
         ->name('posts.admin.index');
     Route::get('posts/{post}/editar', [PostController::class, 'edit'])
         ->name('posts.edit');
@@ -68,7 +55,7 @@ Route::middleware(['auth', 'can:manage-posts'])->group(function () {
         ->name('posts.admin.updateStatus');
     
     // Gestión de Comentarios
-    Route::get('/admin/comentarios', [AdminCommentController::class, 'index'])
+    Route::get('/admin/comentarios', [CommentManagement::class])
         ->name('admin.comments.index');
     Route::patch('/admin/comentarios/{comment}/status', [AdminCommentController::class, 'updateStatus'])
         ->name('admin.comments.updateStatus');
@@ -80,9 +67,6 @@ Route::middleware(['auth', 'can:manage-posts'])->group(function () {
         ->name('admin.users.index');
 });
 
-// ============================================================================
-// RUTAS AUTENTICADAS - LECTURA (Sin rate limiting estricto)
-// ============================================================================
 
 Route::middleware('auth')->group(function () {
     // Perfil
@@ -132,10 +116,6 @@ Route::middleware('auth')->group(function () {
         ->name('items.show');
 });
 
-// ============================================================================
-// API DE NOTIFICACIONES (60 peticiones/minuto)
-// ============================================================================
-
 Route::middleware(['auth', 'throttle:60,1'])->group(function () {
     Route::get('/internal/notifications', [NotificationApiController::class, 'index'])
         ->name('internal.notifications.index');
@@ -143,27 +123,15 @@ Route::middleware(['auth', 'throttle:60,1'])->group(function () {
         ->name('internal.notifications.markAsRead');
 });
 
-// ============================================================================
-// BÚSQUEDA (30 peticiones/minuto - Protege API externa)
-// ============================================================================
-
 Route::middleware(['auth', 'throttle:30,1'])->group(function () {
     Route::get('/search', [SearchController::class, 'index'])
         ->name('search.index');
 });
 
-// ============================================================================
-// CHECKOUT (20 peticiones/minuto - Proceso crítico)
-// ============================================================================
-
 Route::middleware(['auth', 'throttle:20,1'])->group(function () {
     Route::post('/checkout/process', [WishlistController::class, 'processCheckout'])
         ->name('checkout.process');
 });
-
-// ============================================================================
-// ACCIONES DE ESCRITURA (100 peticiones/minuto - Previene spam)
-// ============================================================================
 
 Route::middleware(['auth', 'throttle:100,1'])->group(function () {
     // Colección

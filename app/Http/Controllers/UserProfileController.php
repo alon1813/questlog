@@ -8,13 +8,11 @@ use Illuminate\View\View;
 
 class UserProfileController extends Controller
 {
-
     public function show(User $user): View
     {
         $user->load([
             'items' => function($query) {
-                $query->withPivot('id', 'status', 'score', 'episodes_watched')
-                    ->withCount('likes'); 
+                $query->withPivot('id', 'status', 'score', 'episodes_watched');
             }
         ]);
         
