@@ -1,4 +1,5 @@
 <?php
+// app/Livewire/Admin/CommentManagement.php
 
 namespace App\Livewire\Admin;
 
@@ -50,6 +51,7 @@ class CommentManagement extends Component
         ]);
     }
 
+    // ✅ MÉTODO FALTANTE
     public function updateStatus($commentId, $newStatus)
     {
         $comment = Comment::findOrFail($commentId);
@@ -67,6 +69,7 @@ class CommentManagement extends Component
         }
     }
 
+    // ✅ MÉTODO FALTANTE
     public function deleteComment($commentId)
     {
         $comment = Comment::findOrFail($commentId);

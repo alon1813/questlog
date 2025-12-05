@@ -1,4 +1,5 @@
 <?php
+// app/Http/Controllers/UserProfileController.php
 
 namespace App\Http\Controllers;
 
@@ -16,12 +17,20 @@ class UserProfileController extends Controller
             }
         ]);
         
+        // Cargar los likes solo si hay un usuario autenticado
         if (Auth::check()) {
-            $user->load([
-                'items.pivot.likes' => function($query) {
-                    $query->where('user_id', Auth::id());
+            $user->loadMissing('items.pivot'); // Asegurar que pivot está cargado
+            
+            // Cargar los likes manualmente para cada pivot
+            foreach ($user->items as $item) {
+                if ($item->pivot) {
+                    $item->pivot->load([
+                        'likes' => function($query) {
+                            $query->where('user_id', Auth::id());
+                        }
+                    ]);
                 }
-            ]);
+            }
         }
 
         $user->loadCount(['followers', 'following']);

@@ -43,7 +43,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 Route::middleware(['auth', 'can:manage-posts'])->group(function () {
     // Gestión de Posts
-    Route::get('/admin/posts', [PostManagement::class])
+    Route::get('/admin/posts', [PostController::class, 'adminIndex'])
         ->name('posts.admin.index');
     Route::get('posts/{post}/editar', [PostController::class, 'edit'])
         ->name('posts.edit');
@@ -55,7 +55,7 @@ Route::middleware(['auth', 'can:manage-posts'])->group(function () {
         ->name('posts.admin.updateStatus');
     
     // Gestión de Comentarios
-    Route::get('/admin/comentarios', [CommentManagement::class])
+    Route::get('/admin/comentarios', [AdminCommentController::class, 'index'])
         ->name('admin.comments.index');
     Route::patch('/admin/comentarios/{comment}/status', [AdminCommentController::class, 'updateStatus'])
         ->name('admin.comments.updateStatus');
