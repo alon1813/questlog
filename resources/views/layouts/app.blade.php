@@ -26,6 +26,16 @@
     @stack('styles')
 
     <script>
+        (function() {
+            const darkMode = localStorage.getItem('darkMode') !== 'false';
+            if (darkMode) {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light-mode');
+            } else {
+                document.documentElement.classList.add('light-mode');
+                document.documentElement.classList.remove('dark');
+            }
+        })();
         async function getSanctumCsrfToken() {
             try {
                 const response = await fetch('/sanctum/csrf-cookie', {

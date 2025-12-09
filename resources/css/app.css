@@ -1,94 +1,142 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
+/* ============================================
+   VARIABLES CSS - MODO OSCURO (POR DEFECTO)
+   ============================================ */
 :root {
+    /* Modo Oscuro */
     --bg-primary: #1a1a2e;
     --bg-secondary: #16213e;
     --bg-tertiary: #0f3460;
-    --text-primary: #e94560; /* Color principal  */
-    --text-secondary: #dcdcdc; /* Color de texto general */
-    --border-color: #533483; /* Color de borde */
+    --bg-quaternary: #1e2749;
     
+    --text-primary: #e94560;
+    --text-secondary: #dcdcdc;
+    --text-tertiary: #a0a0a0;
+    
+    --border-color: #533483;
+    --success-color: #32a852;
+    --warning-color: #f59e0b;
+    --error-color: #dc2626;
 }
 
-html { scroll-behavior: smooth; }
+/* ============================================
+   VARIABLES CSS - MODO CLARO
+   ============================================ */
+:root.light-mode {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #e2e8f0;
+    --bg-quaternary: #cbd5e1;
+    
+    --text-primary: #dc2626;
+    --text-secondary: #1e293b;
+    --text-tertiary: #64748b;
+    
+    --border-color: #cbd5e1;
+    --success-color: #16a34a;
+    --warning-color: #d97706;
+    --error-color: #dc2626;
+}
+
+/* ============================================
+   ESTILOS GLOBALES
+   ============================================ */
+html { 
+    scroll-behavior: smooth; 
+}
 
 body {
-    
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-primary);
     color: var(--text-secondary);
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
 }
 
+/* ============================================
+   COMPONENTES ESPECÍFICOS
+   ============================================ */
 
-.view-switcher {
-    background-color: #000;
-    padding: 10px;
-    text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+/* Navegación */
+nav {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
 }
-.view-switcher button {
-    background-color: var(--border-color);
-    color: #fff;
-    border: none;
-    padding: 8px 15px;
-    margin: 0 5px;
-    border-radius: 5px;
-    cursor: pointer;
+
+/* Tarjetas y contenedores */
+.card,
+.container-custom {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
 }
-.view-switcher button.active {
+
+/* Botones primarios */
+.btn-primary {
     background-color: var(--text-primary);
+    color: white;
 }
 
-.view { display: none; }
-.view.active { display: block; }
-
-.cta-button {
-    display: inline-block;
-    padding: 15px 30px;
-    border-radius: 8px;
-    font-size: 1.1em;
-    font-weight: 700;
-    text-transform: uppercase;
-    transition: transform 0.2s, background-color 0.2s;
-    text-decoration: none; 
-    color: #fff; 
-    background-color: var(--text-primary); 
-}
-.cta-button:hover {
-    background-color: #d43a54; 
-    transform: scale(1.05);
-}
-.cta-button-secondary {
-    background-color: transparent;
-    border: 2px solid var(--border-color);
-    color: var(--text-secondary); 
-}
-.cta-button-secondary:hover {
-    background-color: var(--border-color); 
-    color: #fff; 
-    transform: scale(1.05);
+.btn-primary:hover {
+    opacity: 0.8;
 }
 
-/* Animación suave para los inputs */
-input:focus {
+/* Enlaces */
+a {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Inputs */
+input:focus,
+textarea:focus,
+select:focus {
     transform: scale(1.01);
     transition: all 0.2s ease-in-out;
 }
 
-/* Efecto de hover en los enlaces */
-a:hover {
-    transition: all 0.2s ease-in-out;
+/* ============================================
+   SHADOWS ADAPTATIVOS
+   ============================================ */
+.shadow-custom {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-@media (max-width: 900px) {
-    
+:root.light-mode .shadow-custom {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+                0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+/* ============================================
+   OVERLAYS Y MODALES
+   ============================================ */
+.overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+:root.light-mode .overlay {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   SCROLLBAR PERSONALIZADO
+   ============================================ */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-primary);
 }
