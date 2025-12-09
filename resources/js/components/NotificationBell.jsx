@@ -125,7 +125,6 @@ export default function NotificationsBell() {
         };
     }, [pollingInterval]);
 
-    // Cerrar dropdown al hacer clic fuera (YA LO TENÍAS BIEN)
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {

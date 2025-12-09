@@ -1,14 +1,4 @@
 <x-app-layout>
-    @if (request()->has('welcome') && request()->get('welcome') == 'sent')
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-4">
-            <div class="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg">
-                <p class="font-bold text-lg">✅ ¡Email verificado con éxito!</p>
-                <p>Tu cuenta ya está completamente activa. Te hemos enviado un email de bienvenida 🎮</p>
-                <p class="text-sm mt-2">Revisa tu bandeja de entrada (y la carpeta de spam, por si acaso).</p>
-            </div>
-        </div>
-    @endif
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
