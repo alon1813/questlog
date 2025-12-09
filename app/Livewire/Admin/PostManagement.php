@@ -1,5 +1,4 @@
 <?php
-// app/Livewire/Admin/PostManagement.php
 
 namespace App\Livewire\Admin;
 
@@ -49,7 +48,6 @@ class PostManagement extends Component
         ]);
     }
 
-    // ✅ MÉTODO FALTANTE
     public function updateStatus($postId, $newStatus)
     {
         $post = Post::findOrFail($postId);
@@ -68,7 +66,6 @@ class PostManagement extends Component
         }
     }
 
-    // ✅ MÉTODO FALTANTE
     public function deletePost($postId)
     {
         $post = Post::findOrFail($postId);
