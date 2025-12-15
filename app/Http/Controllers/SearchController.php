@@ -25,10 +25,10 @@ class SearchController extends Controller
             
             $cacheKey = "search_{$searchType}_{$query}";
             
-            $results = Cache::remember($cacheKey, 3600, function () use ($searchType, $query) {
-                return $this->fetchFromApi($searchType, $query);
+            $results = Cache::remember($cacheKey, 300, function () use ($searchType, $query) {
+                return rescue(fn() => $this->fetchFromApi($searchType, $query), [], false);
             });
-
+            
             if (Auth::check()) {
                 /** @var \App\Models\User $user */ 
                 $user = Auth::user();

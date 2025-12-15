@@ -34,7 +34,7 @@ class ProfileController extends Controller
         if ($request->hasFile('avatar')) {
             
             $request->validate([
-                'avatar' => 'image|mimes:jpg,jpeg,png|max:2048',
+                'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
             ]);
             
             if ($user->avatar_path) {

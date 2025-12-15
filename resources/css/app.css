@@ -4,9 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ============================================
-   VARIABLES CSS - MODO OSCURO (POR DEFECTO)
-   ============================================ */
+
 :root {
     /* Modo Oscuro */
     --bg-primary: #1a1a2e;
@@ -24,16 +22,13 @@
     --error-color: #dc2626;
 }
 
-/* ============================================
-   VARIABLES CSS - MODO CLARO
-   ============================================ */
 :root.light-mode {
     --bg-primary: #f8fafc;
     --bg-secondary: #ffffff;
     --bg-tertiary: #e2e8f0;
     --bg-quaternary: #cbd5e1;
     
-    --text-primary: #dc2626;
+    --text-primary: #dc2626; /* Más oscuro para modo claro */
     --text-secondary: #1e293b;
     --text-tertiary: #64748b;
     
@@ -43,9 +38,7 @@
     --error-color: #dc2626;
 }
 
-/* ============================================
-   ESTILOS GLOBALES
-   ============================================ */
+
 html { 
     scroll-behavior: smooth; 
 }
@@ -57,9 +50,6 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* ============================================
-   COMPONENTES ESPECÍFICOS
-   ============================================ */
 
 /* Navegación */
 nav {
@@ -84,6 +74,23 @@ nav {
     opacity: 0.8;
 }
 
+/* logo */
+.logo-title {
+    color: var(--text-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.dark .logo-title {
+    color: var(--text-primary);
+    text-shadow: 0 2px 8px rgba(233, 69, 96, 0.3);
+}
+
+.light-mode .logo-title {
+    color: #dc2626; /* Un rojo que se ve bien en claro */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* Enlaces */
 a {
     transition: all 0.2s ease-in-out;
@@ -97,9 +104,6 @@ select:focus {
     transition: all 0.2s ease-in-out;
 }
 
-/* ============================================
-   SHADOWS ADAPTATIVOS
-   ============================================ */
 .shadow-custom {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
                 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -110,9 +114,7 @@ select:focus {
                 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
-/* ============================================
-   OVERLAYS Y MODALES
-   ============================================ */
+
 .overlay {
     background-color: rgba(0, 0, 0, 0.5);
 }
@@ -121,9 +123,7 @@ select:focus {
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-/* ============================================
-   SCROLLBAR PERSONALIZADO
-   ============================================ */
+
 ::-webkit-scrollbar {
     width: 10px;
 }

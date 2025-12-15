@@ -19,7 +19,7 @@ class NotificationApiController extends Controller
 
         return response()->json([
             'unread_count' => $user->unreadNotifications->count(),
-            'notifications' => $user->notifications->take(20)->map(function ($n) {
+            'notifications' => $user->notifications()->take(20)->get()->map(function ($n) {
                 return [
                     'id' => $n->id,
                     'type' => class_basename($n->type), 

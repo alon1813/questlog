@@ -34,7 +34,8 @@ class CommentManagement extends Component
     {
         $comments = Comment::with('user', 'post')
             ->when($this->search, function ($query) {
-                $query->where('body', 'like', '%' . $this->search . '%')
+                $search = str_replace(['%', '_'], ['\%', '\_'], $this->search);
+                $query->where('body', 'like', "%{$search}%")
                     ->orWhereHas('user', function ($q) {
                         $q->where('name', 'like', '%' . $this->search . '%');
                     });

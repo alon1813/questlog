@@ -11,17 +11,23 @@ class UserProfileController extends Controller
 {
     public function show(User $user): View
     {
+        // $user->load([
+        //     'items' => function($query) {
+        //         $query->withPivot('id', 'status', 'score', 'episodes_watched');
+        //     }
+        // ]);
+
         $user->load([
-            'items' => function($query) {
-                $query->withPivot('id', 'status', 'score', 'episodes_watched');
-            }
+            'items' => fn($query) => $query->withPivot('id', 'status', 'score', 'episodes_watched'),
+            'items.pivot.likes' => fn($query) => $query->where('user_id', Auth::id()),
+            'followers:id,name',
+            'following:id,name'
         ]);
         
-        // Cargar los likes solo si hay un usuario autenticado
         if (Auth::check()) {
-            $user->loadMissing('items.pivot'); // Asegurar que pivot está cargado
+            $user->loadMissing('items.pivot'); 
             
-            // Cargar los likes manualmente para cada pivot
+            
             foreach ($user->items as $item) {
                 if ($item->pivot) {
                     $item->pivot->load([

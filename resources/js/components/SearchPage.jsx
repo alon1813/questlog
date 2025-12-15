@@ -23,7 +23,11 @@ export default function SearchPage() {
             .then((response) => {
                 setResults(Array.isArray(response.data) ? response.data : []);
             })
-            .catch(() => setResults([]))
+            .catch((error) => {
+                console.error('Search error:', error);
+                toast.error('Error al buscar. Intenta de nuevo.');
+                setResults([]);
+            })
             .finally(() => setLoading(false));
     };
 
@@ -96,7 +100,7 @@ export default function SearchPage() {
 
     return (
         <div
-            className={`bg-[#0f172a] text-white p-6 transition-all duration-500 ${
+            className={`bg-[#0f172a] text-white p-4 sm:p-6 transition-all duration-500 ${
                 results.length > 0 ? "min-h-screen" : "min-h-[60vh]"
             } flex flex-col items-center`}
         >
@@ -112,12 +116,13 @@ export default function SearchPage() {
                 }}
             />
 
-            <div className="flex gap-3 mb-4">
+            {/* Filtros de tipo: scroll horizontal en móvil */}
+            <div className="flex gap-2 sm:gap-3 mb-4 overflow-x-auto w-full max-w-2xl pb-2 sm:pb-0">
                 {["anime", "game"].map((t) => (
                     <button
                         key={t}
                         onClick={() => setType(t)}
-                        className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
+                        className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                             type === t
                                 ? "bg-indigo-600 text-white"
                                 : "bg-slate-800 text-gray-300 hover:bg-slate-700"
@@ -128,50 +133,48 @@ export default function SearchPage() {
                 ))}
             </div>
 
-            <div className="flex w-full max-w-2xl mb-6 gap-2">
+            {/* Barra de búsqueda: stack en móvil, flex en desktop */}
+            <div className="flex flex-col sm:flex-row w-full max-w-2xl mb-6 gap-2">
                 <input
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={`Buscar ${type === "anime" ? "animes" : "videojuegos"}...`}
-                    
-                    className="flex-1 px-4 py-3 rounded-lg bg-white border border-slate-600 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none"
+                    className="flex-1 px-4 py-3 rounded-lg bg-white border border-slate-600 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none text-sm sm:text-base"
                 />
                 <button
                     onClick={handleSearch}
-                    className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold text-sm"
+                    className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 sm:py-2 rounded-lg font-semibold text-sm whitespace-nowrap"
                 >
-                    <SearchIcon className="w-6 h-6" strokeWidth={2} />
-                    Buscar
+                    <SearchIcon className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2} />
+                    <span className="hidden sm:inline">Buscar</span>
                 </button>
-
             </div>
 
             {query && (
-                <p className="text-gray-400 text-sm mb-6">
-                    Mostrando resultados para: <span className="text-indigo-400">“{query}”</span>
+                <p className="text-gray-400 text-xs sm:text-sm mb-6">
+                    Mostrando resultados para: <span className="text-indigo-400">"{query}"</span>
                 </p>
             )}
 
             {loading ? (
-                <p className="text-gray-400 text-center py-10 text-lg">Buscando...</p>
+                <p className="text-gray-400 text-center py-10 text-base sm:text-lg">Buscando...</p>
             ) : results.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-5 w-full max-w-6xl">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5 w-full max-w-7xl">
                     {results.map((item) => (
                         <div
                             key={item.api_id || item.id}
-                            className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+                            className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200 flex flex-col"
                         >
                             <img
                                 src={item.cover_image_url}
                                 alt={item.title}
-                                
-                                className="w-full h-44 object-cover" 
+                                className="w-full aspect-[2/3] object-cover"
                             />
-                            <div className="p-3">
+                            <div className="p-2 sm:p-3 flex flex-col flex-grow">
                                 <h3
-                                    className="text-sm font-semibold text-white mb-1 truncate"
+                                    className="text-xs sm:text-sm font-semibold text-white mb-1 leading-tight line-clamp-2"
                                     title={item.title}
                                 >
                                     {item.title}
@@ -181,18 +184,20 @@ export default function SearchPage() {
                                 {item.in_collection ? (
                                     <button
                                         onClick={() => removeFromCollection(item)}
-                                        className="w-full bg-red-600 hover:bg-red-700 text-white py-1.5 rounded-md font-semibold text-xs flex items-center justify-center gap-1 transition"
+                                        className="w-full bg-red-600 hover:bg-red-700 text-white py-1.5 sm:py-2 rounded-md font-semibold text-xs flex items-center justify-center gap-1 transition mt-auto"
                                     >
-                                        <RemoveIcon className="w-4 h-4" /> Eliminar de Mi Colección
-
+                                        <RemoveIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                                        <span className="hidden sm:inline">Eliminar</span>
+                                        <span className="sm:hidden">×</span>
                                     </button>
                                 ) : (
                                     <button
                                         onClick={() => addToCollection(item)}
-                                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-1.5 rounded-md font-semibold text-xs flex items-center justify-center gap-1 transition"
+                                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-1.5 sm:py-2 rounded-md font-semibold text-xs flex items-center justify-center gap-1 transition mt-auto"
                                     >
-                                        <AddIcon className="w-4 h-4" /> Añadir a Mi Colección
-
+                                        <AddIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                                        <span className="hidden sm:inline">Añadir</span>
+                                        <span className="sm:hidden">+</span>
                                     </button>
                                 )}
                             </div>
@@ -200,11 +205,11 @@ export default function SearchPage() {
                     ))}
                 </div>
             ) : query.length > 1 ? (
-                <p className="text-gray-400 text-center py-10">
-                    No se encontraron resultados para “{query}”.
+                <p className="text-gray-400 text-center py-10 text-sm sm:text-base">
+                    No se encontraron resultados para "{query}".
                 </p>
             ) : (
-                <p className="text-gray-500 text-center py-10">
+                <p className="text-gray-500 text-center py-10 text-sm sm:text-base">
                     Empieza a escribir para buscar.
                 </p>
             )}

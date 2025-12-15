@@ -1,8 +1,29 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-    x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }"
-    x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
-    x-bind:class="{ 'dark': darkMode }">
+    x-data="{ 
+        darkMode: localStorage.getItem('darkMode') !== 'false'
+    }"
+    x-init="
+        $watch('darkMode', val => {
+            localStorage.setItem('darkMode', val);
+            if (val) {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light-mode');
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light-mode');
+            }
+        });
+        // Aplicar estado inicial inmediatamente
+        if (darkMode) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light-mode');
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light-mode');
+        }
+    "
+    :class="{ 'dark': darkMode }">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
