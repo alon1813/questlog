@@ -11,17 +11,10 @@ class UserProfileController extends Controller
 {
     public function show(User $user): View
     {
-        // $user->load([
-        //     'items' => function($query) {
-        //         $query->withPivot('id', 'status', 'score', 'episodes_watched');
-        //     }
-        // ]);
-
         $user->load([
-            'items' => fn($query) => $query->withPivot('id', 'status', 'score', 'episodes_watched'),
-            'items.pivot.likes' => fn($query) => $query->where('user_id', Auth::id()),
-            'followers:id,name',
-            'following:id,name'
+            'items' => function($query) {
+                $query->withPivot('id', 'status', 'score', 'episodes_watched');
+            }
         ]);
         
         if (Auth::check()) {

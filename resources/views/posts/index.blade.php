@@ -12,7 +12,10 @@
                 @foreach ($posts as $post)
                     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg flex flex-col">
                         <img src="{{ $post->image_url ?? asset('images/default-post-image.png') }}" 
-                        alt="Imagen del post" class="w-full h-48 object-cover">
+                            alt="Imagen del post" 
+                            class="w-full h-48 object-cover"
+                            loading="lazy"
+                            decoding="async">
                         <div class="p-6 flex flex-col flex-grow">
                             <h3 class="font-bold text-lg text-gray-900 dark:text-gray-100">{{ $post->title }}</h3>
                             <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">

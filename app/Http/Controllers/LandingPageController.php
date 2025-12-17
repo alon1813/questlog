@@ -117,6 +117,15 @@ class LandingPageController extends Controller
             ],
         ];
 
+        // $popularItems = Item::query()
+        // ->select('items.*', DB::raw('COUNT(item_user.id) as users_count'))
+        // ->join('item_user', 'items.id', '=', 'item_user.item_id')
+        // ->where('item_user.created_at', '>=', now()->subMonth())
+        // ->groupBy('items.id')
+        // ->orderByDesc('users_count')
+        // ->limit(12)
+        // ->get();
+
         return view('landing', compact('user', 'recentActivities', 'popularItems'));
     }
 }

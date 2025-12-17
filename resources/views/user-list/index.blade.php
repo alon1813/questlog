@@ -20,17 +20,15 @@
 
             <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-[var(--text-primary)]">Mi Colección</h1>
 
-            <!-- Controles: Stack en móvil, flex en desktop -->
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-[var(--bg-secondary)] p-3 sm:p-4 rounded-lg mb-6 sm:mb-8 text-[var(--text-secondary)] gap-3 sm:gap-0">
                 
-                <!-- Filtros: scroll horizontal en móvil -->
                 <div class="filters flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
                     <a href="{{ route('user-list.index') }}" 
-                       class="px-3 py-1.5 text-xs sm:text-sm rounded-md whitespace-nowrap {{ request('status') === null ? 'bg-[var(--text-primary)] text-white' : 'bg-[var(--bg-tertiary)] hover:bg-[var(--bg-quaternary)]' }}">
+                    class="px-3 py-1.5 text-xs sm:text-sm rounded-md whitespace-nowrap {{ request('status') === null ? 'bg-[var(--text-primary)] text-white' : 'bg-[var(--bg-tertiary)] hover:bg-[var(--bg-quaternary)]' }}">
                         Todos
                     </a>
                     <a href="{{ route('user-list.index', ['status' => 'Jugando']) }}" 
-                       class="px-3 py-1.5 text-xs sm:text-sm rounded-md whitespace-nowrap {{ request('status') === 'Jugando' ? 'bg-[var(--text-primary)] text-white' : 'bg-[var(--bg-tertiary)] hover:bg-[var(--bg-quaternary)]' }}">
+                    class="px-3 py-1.5 text-xs sm:text-sm rounded-md whitespace-nowrap {{ request('status') === 'Jugando' ? 'bg-[var(--text-primary)] text-white' : 'bg-[var(--bg-tertiary)] hover:bg-[var(--bg-quaternary)]' }}">
                         En Progreso
                     </a>
                     <a href="{{ route('user-list.index', ['status' => 'Completado']) }}" 
@@ -47,7 +45,6 @@
                     </a>
                 </div>
                 
-                <!-- Toggle de vista -->
                 <div class="view-toggle flex items-center justify-center sm:justify-start gap-2">
                     <button @click="view = 'grid'" 
                             :class="{ 'bg-[var(--text-primary)] text-white': view === 'grid', 'bg-[var(--bg-tertiary)]': view !== 'grid' }" 
@@ -62,7 +59,6 @@
                 </div>
             </div>
 
-            <!-- Vista de Cuadrícula: responsive desde 2 hasta 7 columnas -->
             <div x-show="view === 'grid'" 
                  class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4">
                 @forelse ($items as $item)

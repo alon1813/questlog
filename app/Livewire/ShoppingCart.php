@@ -17,28 +17,26 @@ class ShoppingCart extends Component
 {
     public $items; 
     public $selectedItems = []; 
+    public $quantities = []; // Rastrear cantidades locales
 
-    
     protected $listeners = ['productAddedToCart' => 'loadCartItems']; 
 
-    
     public function getSelectedSubtotalProperty()
     {
         return $this->items
             ->whereIn('id', $this->selectedItems)
             ->sum(function ($item) {
-                
-                return $item->price * ($item->pivot->quantity ?? 1);
+                // Usar cantidad local si existe, sino pivot
+                $quantity = $this->quantities[$item->id] ?? $item->pivot->quantity ?? 1;
+                return $item->price * $quantity;
             });
     }
 
-    
     public function mount()
     {
         $this->loadCartItems();
     }
 
-    
     private function loadCartItems()
     {
         /** @var \App\Models\User $user */
@@ -47,6 +45,11 @@ class ShoppingCart extends Component
             $this->items = $user->wishlistProducts()
                                 ->withPivot('quantity')
                                 ->get();
+            
+            // Inicializar cantidades locales
+            foreach ($this->items as $item) {
+                $this->quantities[$item->id] = $item->pivot->quantity ?? 1;
+            }
         } else {
             $this->items = collect(); 
         }
@@ -57,8 +60,15 @@ class ShoppingCart extends Component
         /** @var \App\Models\User $user */
         $user = Auth::user();
         if ($user) {
-            $currentQuantity = $user->wishlistProducts()->where('product_id', $productId)->first()->pivot->quantity ?? 0;
-            $user->wishlistProducts()->updateExistingPivot($productId, ['quantity' => $currentQuantity + 1]);
+            $currentQuantity = $this->quantities[$productId] ?? 1;
+            $newQuantity = $currentQuantity + 1;
+            
+            // Actualizar en BD
+            $user->wishlistProducts()->updateExistingPivot($productId, ['quantity' => $newQuantity]);
+            
+            // Actualizar local
+            $this->quantities[$productId] = $newQuantity;
+            
             $this->loadCartItems(); 
         }
     }
@@ -68,15 +78,19 @@ class ShoppingCart extends Component
         /** @var \App\Models\User $user */
         $user = Auth::user();
         if ($user) {
-            $productInWishlist = $user->wishlistProducts()->where('product_id', $productId)->first();
+            $currentQuantity = $this->quantities[$productId] ?? 1;
 
-            if ($productInWishlist && $productInWishlist->pivot->quantity > 1) {
-                $newQuantity = $productInWishlist->pivot->quantity - 1;
+            if ($currentQuantity > 1) {
+                $newQuantity = $currentQuantity - 1;
                 $user->wishlistProducts()->updateExistingPivot($productId, ['quantity' => $newQuantity]);
+                $this->quantities[$productId] = $newQuantity;
             } else {
+                // Si es 1, eliminar
                 $user->wishlistProducts()->detach($productId);
                 $this->selectedItems = array_diff($this->selectedItems, [$productId]);
+                unset($this->quantities[$productId]);
             }
+            
             $this->loadCartItems(); 
         }
     }
@@ -88,6 +102,7 @@ class ShoppingCart extends Component
         if ($user) {
             $user->wishlistProducts()->detach($productId);
             $this->selectedItems = array_diff($this->selectedItems, [$productId]);
+            unset($this->quantities[$productId]);
             $this->loadCartItems(); 
         }
     }
@@ -98,7 +113,14 @@ class ShoppingCart extends Component
             session()->flash('error', 'Por favor, selecciona al menos un producto para comprar.');
             return;
         }
-        return $this->redirect(route('checkout.summary', ['selectedItems' => implode(',', $this->selectedItems)]), navigate: true);
+        
+        // Pasar cantidades actualizadas en la URL
+        $queryParams = [
+            'selectedItems' => implode(',', $this->selectedItems),
+            'quantities' => json_encode(array_intersect_key($this->quantities, array_flip($this->selectedItems)))
+        ];
+        
+        return $this->redirect(route('checkout.summary', $queryParams), navigate: true);
     }
 
     public function buySingleItemLivewire($productId)
@@ -108,20 +130,27 @@ class ShoppingCart extends Component
 
         $wishlistItem = $user->wishlistProducts()->where('products.id', $productId)->first();
 
-        if (!$wishlistItem || $wishlistItem->pivot->quantity <= 0) {
-            session()->flash('error', 'El producto no está en tu carrito o la cantidad es inválida.');
+        if (!$wishlistItem) {
+            session()->flash('error', 'El producto no está en tu carrito.');
+            $this->loadCartItems();
+            return;
+        }
+
+        // Usar cantidad local actualizada
+        $quantity = $this->quantities[$productId] ?? $wishlistItem->pivot->quantity ?? 1;
+
+        if ($quantity <= 0) {
+            session()->flash('error', 'La cantidad es inválida.');
             $this->loadCartItems();
             return;
         }
 
         $product = $wishlistItem;
-        $quantity = $wishlistItem->pivot->quantity;
 
         DB::beginTransaction();
         try {
             $totalAmount = $product->price * $quantity;
 
-            // 2. Crear la Orden
             $order = Order::create([
                 'user_id' => $user->id,
                 'order_number' => 'ORD-' . Str::upper(Str::random(8)),
@@ -129,7 +158,6 @@ class ShoppingCart extends Component
                 'status' => 'completed',
             ]);
 
-            // 3. Asociar el Item a la Orden
             $order->items()->create([
                 'product_id' => $product->id,
                 'quantity' => $quantity,
@@ -138,28 +166,32 @@ class ShoppingCart extends Component
                 'updated_at' => now(),
             ]);
 
-            // 4. Eliminar el producto comprado SOLO de la wishlist
             $user->wishlistProducts()->detach($productId);
+            unset($this->quantities[$productId]);
 
             DB::commit();
 
-            // 5. Generar PDF y enviar Email
             $order->load('user', 'items.product');
             $pdf = Pdf::loadView('invoices.order', ['order' => $order]);
             $invoiceFileName = 'factura-' . $order->order_number . '.pdf';
+            
             if (!Storage::disk('public')->exists('invoices')) {
                 Storage::disk('public')->makeDirectory('invoices');
             }
+            
             $pdf->save(Storage::disk('public')->path('invoices/' . $invoiceFileName));
             Mail::to($user->email)->send(new OrderConfirmationMail($order, Storage::disk('public')->path('invoices/' . $invoiceFileName)));
 
-            // 6. Redirigir a la página de confirmación
             session()->flash('success', '¡Tu compra ha sido procesada con éxito!');
             return $this->redirect(route('checkout.confirmation', $order), navigate: true); 
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error al procesar la compra individual (Livewire): ' . $e->getMessage(), ['user_id' => $user->id, 'product_id' => $productId, 'exception' => $e]);
+            Log::error('Error al procesar la compra individual (Livewire): ' . $e->getMessage(), [
+                'user_id' => $user->id, 
+                'product_id' => $productId, 
+                'exception' => $e
+            ]);
             session()->flash('error', 'Error al procesar tu compra: ' . $e->getMessage());
             $this->loadCartItems(); 
             return;
