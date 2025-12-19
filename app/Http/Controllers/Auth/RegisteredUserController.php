@@ -13,12 +13,12 @@ use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
-    
     public function create(): View
     {
         return view('auth.register');
@@ -26,24 +26,34 @@ class RegisteredUserController extends Controller
 
     public function store(RegisterRequest $request): RedirectResponse
     {
-        $user = User::create([
-            'name' => $request->name,
-            'username' => $request->username, 
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'username' => $request->username, 
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-        Activity::create([
-            'user_id' => $user->id,
-            'type' => 'user_joined',
-            'subject_id' => $user->id,
-            'subject_type' => User::class,
-        ]);
+            Activity::create([
+                'user_id' => $user->id,
+                'type' => 'user_joined',
+                'subject_id' => $user->id,
+                'subject_type' => User::class,
+            ]);
 
-        event(new Registered($user));
+            event(new Registered($user));
 
-        Auth::login($user);
+            Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+            return redirect(route('dashboard', absolute: false));
+            
+        } catch (\Exception $e) {
+            Log::error('Error en registro de usuario: ' . $e->getMessage());
+            
+            return back()
+                ->withInput($request->except('password', 'password_confirmation'))
+                ->withErrors(['error' => 'Ocurrió un error durante el registro. Por favor, intenta nuevamente.']);
+        }
     }
 }

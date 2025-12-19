@@ -20,14 +20,15 @@ class RegisterRequest extends FormRequest
                 'required', 
                 'string', 
                 'max:30',
-                'regex:/^[\pL\s]+$/u' 
+                'regex:/^[\pL\s\-]+$/u' 
             ],
             'username' => [
                 'required', 
                 'string', 
                 'max:30', 
-                'unique:'.User::class,
-                'regex:/^[a-zA-Z0-9_\-]+$/' 
+                'unique:'.User::class.',username',
+                'regex:/^[a-zA-Z0-9_\-]+$/', 
+                'alpha_dash' 
             ],
             'email' => [
                 'required', 
@@ -35,7 +36,7 @@ class RegisterRequest extends FormRequest
                 'lowercase', 
                 'email:rfc,dns', 
                 'max:255', 
-                'unique:'.User::class
+                'unique:'.User::class.',email'
             ],
             'password' => [
                 'required',
@@ -60,6 +61,7 @@ class RegisterRequest extends FormRequest
             'username.unique' => 'Este nombre de usuario ya está en uso',
             'username.max' => 'El nombre de usuario no puede superar 30 caracteres',
             'username.regex' => 'El nombre de usuario solo puede contener letras, números, guiones bajos (_) y guiones medios (-)',
+            'username.alpha_dash' => 'El nombre de usuario tiene caracteres no permitidos',
             
             'email.required' => 'El correo electrónico es obligatorio',
             'email.email' => 'Debes introducir un correo electrónico válido',
@@ -68,6 +70,18 @@ class RegisterRequest extends FormRequest
             
             'password.required' => 'La contraseña es obligatoria',
             'password.confirmed' => 'Las contraseñas no coinciden',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres',
+            'password.letters' => 'La contraseña debe contener letras',
+            'password.mixed' => 'La contraseña debe contener mayúsculas y minúsculas',
+            'password.numbers' => 'La contraseña debe contener números',
+            'password.symbols' => 'La contraseña debe contener símbolos especiales',
         ];
+    }
+    
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'email' => strtolower($this->email),
+        ]);
     }
 }

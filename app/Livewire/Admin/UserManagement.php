@@ -7,8 +7,6 @@ use App\Models\User;
 use App\Notifications\AccountSuspendedNotification;
 use App\Notifications\AccountWarningNotification;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Log;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 
@@ -57,27 +55,6 @@ class UserManagement extends Component
         }
     }
 
-    /**
-     * Envía notificación de forma segura (no falla si el email no funciona)
-     */
-    private function sendNotificationSafely($user, $notification)
-    {
-        try {
-            // Intentar enviar la notificación
-            Notification::send($user, $notification);
-            return true;
-        } catch (\Exception $e) {
-            // Si falla, registrar en logs pero NO romper el flujo
-            Log::warning('Email notification failed', [
-                'user_id' => $user->id,
-                'user_email' => $user->email,
-                'notification' => get_class($notification),
-                'error' => $e->getMessage()
-            ]);
-            return false;
-        }
-    }
-
     public function changeStatus($userId, $newStatus)
     {
         try {
@@ -89,8 +66,6 @@ class UserManagement extends Component
                 return;
             }
 
-            $emailSent = false;
-
             // Si se selecciona "warned" manualmente, incrementar avisos
             if ($newStatus === 'warned') {
                 $user->warnings_count++;
@@ -98,38 +73,30 @@ class UserManagement extends Component
                 // Si llega a 3 avisos, suspender automáticamente
                 if ($user->warnings_count >= 3) {
                     $user->status = 'suspended';
-                    $emailSent = $this->sendNotificationSafely($user, new AccountSuspendedNotification());
-                    
-                    $message = 'Usuario ' . $user->name . ' suspendido automáticamente tras 3 avisos.';
-                    $message .= $emailSent ? ' Email enviado.' : ' (Email no enviado - revisar configuración)';
-                    session()->flash('success', $message);
+                    $user->notify(new AccountSuspendedNotification());
+                    session()->flash('success', 'Usuario ' . $user->name . ' suspendido automáticamente tras 3 avisos.');
                 } else {
                     $user->status = 'warned';
-                    $emailSent = $this->sendNotificationSafely($user, new AccountWarningNotification($user->warnings_count));
-                    
-                    $message = 'Advertencia #' . $user->warnings_count . ' registrada para ' . $user->name . '.';
-                    $message .= $emailSent ? ' Email enviado.' : ' (Email no enviado - revisar configuración)';
-                    session()->flash('success', $message);
+                    $user->notify(new AccountWarningNotification($user->warnings_count));
+                    session()->flash('success', 'Advertencia #' . $user->warnings_count . ' enviada a ' . $user->name . '.');
                 }
             } 
             // Si se suspende directamente
             elseif ($newStatus === 'suspended' && $previousStatus !== 'suspended') {
                 $user->status = 'suspended';
-                $emailSent = $this->sendNotificationSafely($user, new AccountSuspendedNotification());
-                
-                $message = 'Usuario ' . $user->name . ' suspendido.';
-                $message .= $emailSent ? ' Email enviado.' : ' (Email no enviado - revisar configuración)';
-                session()->flash('success', $message);
+                $user->notify(new AccountSuspendedNotification());
+                session()->flash('success', 'Usuario ' . $user->name . ' suspendido y notificado.');
             } 
             // Si se reactiva de suspendido
             elseif ($newStatus === 'active' && $previousStatus === 'suspended') {
                 $user->status = 'active';
-                $user->warnings_count = 0;
+                $user->warnings_count = 0; // Reset avisos al reactivar
                 session()->flash('success', 'Usuario ' . $user->name . ' reactivado. Avisos reseteados.');
             }
             // Si se pasa de warned a active (sin resetear avisos)
             elseif ($newStatus === 'active' && $previousStatus === 'warned') {
                 $user->status = 'active';
+                // NO resetear warnings_count aquí para mantener historial
                 session()->flash('success', 'Usuario ' . $user->name . ' activado. Avisos mantenidos: ' . $user->warnings_count);
             }
             // Cualquier otro cambio directo
@@ -138,17 +105,10 @@ class UserManagement extends Component
                 session()->flash('success', 'Estado de ' . $user->name . ' actualizado a ' . $newStatus . '.');
             }
 
-            // IMPORTANTE: Guardar DESPUÉS de enviar notificaciones
             $user->save();
             
         } catch (\Exception $e) {
-            Log::error('Error changing user status', [
-                'user_id' => $userId,
-                'new_status' => $newStatus,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            session()->flash('error', 'Error al cambiar el estado. Por favor, revisa la configuración de correo.');
+            session()->flash('error', 'Error al cambiar el estado: ' . $e->getMessage());
         }
     }
 
