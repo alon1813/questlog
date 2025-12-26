@@ -107,7 +107,7 @@
             <p x-text="notificationMessage"></p>
         </div>
     </div>
-
+    <livewire:likes-modal />
     @livewireScripts
     @stack('scripts')
 </body>

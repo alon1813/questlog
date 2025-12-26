@@ -85,6 +85,44 @@
 
                     <!-- Tendencias -->
                     <div class="bg-[var(--bg-secondary)] p-4 sm:p-6 rounded-lg shadow-lg border border-[var(--border-color)]">
+                        <h4 class="font-bold text-base sm:text-lg text-[var(--text-primary)] mb-3 sm:mb-4 flex items-center gap-2">
+                            <i class="fas fa-fire"></i>
+                            Posts en Tendencia
+                        </h4>
+                        
+                        <ul class="space-y-3">
+                            @forelse ($trendingPosts as $post)
+                                <li>
+                                    <a href="{{ route('posts.show', $post) }}" 
+                                    class="block hover:bg-[var(--bg-tertiary)] p-2 rounded-lg transition-colors">
+                                        <div class="text-xs sm:text-sm text-[var(--text-secondary)] line-clamp-2 font-medium">
+                                            {{ $post->title }}
+                                        </div>
+                                        <div class="flex items-center gap-2 mt-1 text-xs text-gray-400">
+                                            <span class="flex items-center gap-1">
+                                                <i class="fas fa-heart text-red-500"></i>
+                                                {{ $post->likes_count }}
+                                            </span>
+                                            <span>·</span>
+                                            <span>{{ $post->created_at->diffForHumans() }}</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            @empty
+                                <p class="text-xs sm:text-sm text-gray-400">
+                                    No hay posts trending esta semana.
+                                </p>
+                            @endforelse
+                        </ul>
+
+                        @if($trendingPosts->isNotEmpty())
+                            <a href="{{ route('posts.popular') }}" 
+                            class="block mt-4 text-center text-sm text-[var(--text-primary)] hover:underline">
+                                Ver todos los populares →
+                            </a>
+                        @endif
+                    </div>
+                    <div class="bg-[var(--bg-secondary)] p-4 sm:p-6 rounded-lg shadow-lg border border-[var(--border-color)]">
                         <h4 class="font-bold text-base sm:text-lg text-[var(--text-primary)] mb-3 sm:mb-4">
                             Tendencias de la Semana
                         </h4>
@@ -92,8 +130,8 @@
                             @forelse ($trendingItems as $item)
                                 <li class="flex items-center gap-2 sm:gap-3">
                                     <img src="{{ $item->cover_image_url ?? asset('images/default-game-cover.png') }}" 
-                                         alt="{{ $item->title }}" 
-                                         class="w-8 h-10 sm:w-10 sm:h-14 object-cover rounded flex-shrink-0">
+                                        alt="{{ $item->title }}" 
+                                        class="w-8 h-10 sm:w-10 sm:h-14 object-cover rounded flex-shrink-0">
                                     <div class="text-xs sm:text-sm text-[var(--text-secondary)] break-words min-w-0">
                                         <span class="line-clamp-2">{{ $item->title }}</span>
                                         <span class="text-xs text-gray-400">({{ $item->additions_count }} adiciones)</span>

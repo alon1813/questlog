@@ -26,6 +26,34 @@
                 </div>
             </div>
 
+            <div class="bg-[var(--bg-secondary)] p-6 rounded-lg shadow-lg mb-8">
+                <h3 class="text-xl font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+                    <i class="fas fa-heart"></i>
+                    Estadísticas de Likes
+                </h3>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="text-center p-4 bg-[var(--bg-primary)] rounded-lg">
+                        <div class="text-3xl font-bold text-red-400">{{ $likeStats['posts'] }}</div>
+                        <div class="text-sm text-gray-400 mt-1">En Posts</div>
+                    </div>
+                    
+                    <div class="text-center p-4 bg-[var(--bg-primary)] rounded-lg">
+                        <div class="text-3xl font-bold text-pink-400">{{ $likeStats['comments'] }}</div>
+                        <div class="text-sm text-gray-400 mt-1">En Comentarios</div>
+                    </div>
+                    
+                    <div class="text-center p-4 bg-[var(--bg-primary)] rounded-lg">
+                        <div class="text-3xl font-bold text-purple-400">{{ $likeStats['items'] }}</div>
+                        <div class="text-sm text-gray-400 mt-1">En Colección</div>
+                    </div>
+                    
+                    <div class="text-center p-4 bg-[var(--bg-primary)] rounded-lg">
+                        <div class="text-3xl font-bold text-blue-400">{{ $likeStats['given'] }}</div>
+                        <div class="text-sm text-gray-400 mt-1">Dados</div>
+                    </div>
+                </div>
+            </div>
             
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg mt-6">
                 <div class="max-w-xl">

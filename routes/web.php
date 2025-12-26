@@ -86,6 +86,8 @@ Route::middleware('auth')->group(function () {
         ->name('posts.create');
     Route::post('/posts', [PostController::class, 'store'])
         ->name('posts.store');
+    Route::get('/noticias/populares', [PostController::class, 'popular'])
+        ->name('posts.popular');
     
     // Mi Lista/Colección
     Route::get('/mi-lista', [UserListItemController::class, 'index'])

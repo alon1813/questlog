@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 use App\Models\Item;
+use App\Models\Post;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -34,7 +35,13 @@ class DashboardController extends Controller
             ->limit(3)
             ->get();
         
-        $popularItems = [
+        $trendingPosts = Post::withCount('likes')
+        ->where('status', 'published')
+        ->where('created_at', '>=', now()->subWeek())
+        ->orderByDesc('likes_count')
+        ->limit(3)
+        ->get();
+            $popularItems = [
             (object)[
                 'id' => 1, 
                 'title' => 'Baldur\'s Gate 3', 
@@ -125,6 +132,7 @@ class DashboardController extends Controller
             'activities' => $activities,
             'stats' => $stats,
             'trendingItems' => $trendingItems,
+            'trendingPosts' => $trendingPosts, // 🆕
             'popularItems' => $popularItems,
         ]);
     }

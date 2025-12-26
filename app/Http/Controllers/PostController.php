@@ -7,12 +7,15 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function index(){
-
-        $posts = Post::with('user')->where('status', 'published')->latest()->paginate(9);
+    public function index()
+    {
+        $posts = Post::with(['user', 'likes'])
+            ->where('status', 'published')
+            ->latest()
+            ->paginate(9);
+        
         return view('posts.index', ['posts' => $posts]);
-    
-    }  
+    }
     
     public function show(Post $post)
     {
@@ -22,7 +25,7 @@ class PostController extends Controller
             ->with('user:id,name,username,avatar_path')
             ->latest();
 
-        }, 'comments.user']);
+        }, 'comments.user', 'likes']);
 
         return view('posts.show', ['post' => $post]);
     }
@@ -82,6 +85,17 @@ class PostController extends Controller
         ]);
 
         return redirect()->route('posts.admin.index')->with('success', 'Post actualizado con éxito.');
+    }
+
+    public function popular()
+    {
+        $posts = Post::withCount('likes')
+            ->with('user')
+            ->where('status', 'published')
+            ->orderByDesc('likes_count')
+            ->paginate(12);
+        
+        return view('posts.popular', compact('posts'));
     }
 
     public function destroy(Post $post){

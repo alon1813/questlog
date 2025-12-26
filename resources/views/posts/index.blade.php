@@ -1,8 +1,15 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Últimas Noticias
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Últimas Noticias
+            </h2>
+            <a href="{{ route('posts.popular') }}" 
+            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+                <i class="fas fa-fire"></i>
+                Ver Populares
+            </a>
+        </div>
     </x-slot>
 
     <div class="py-12">
@@ -27,6 +34,10 @@
                             <a href="{{ route('posts.show', $post) }}" class="mt-4 self-end text-indigo-600 dark:text-indigo-400 hover:underline">
                                 Leer más &rarr;
                             </a>
+                            <div class="flex items-center justify-between mt-4 text-sm text-gray-500">
+                                <span>{{ $post->likes->count() }} me gusta</span>
+                                <span>{{ $post->comments->count() }} comentarios</span>
+                            </div>
                         </div>
                     </div>
                 @endforeach

@@ -1,11 +1,10 @@
 <x-app-layout>
     <div class="py-12">
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8"> 
+        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             <article>
-                <header
-                    class="relative h-80 md:h-96 rounded-lg flex flex-col justify-end p-6 md:p-10 text-white bg-cover bg-center shadow-lg mb-12"
+                <header class="relative h-80 md:h-96 rounded-lg flex flex-col justify-end p-6 md:p-10 text-white bg-cover bg-center shadow-lg mb-12"
                     style="background-image: linear-gradient(to top, rgba(0,0,0,0.85) 30%, transparent 90%), url('{{ $post->image_url ?? asset('images/default-post-image.png') }}');">
-
+                    
                     <h1 class="text-3xl md:text-4xl font-black z-10 leading-tight">{{ $post->title }}</h1>
 
                     <div class="flex items-center gap-3 z-10 mt-4">
@@ -24,6 +23,11 @@
                 </header>
 
                 <div class="bg-[var(--bg-secondary)] dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6 md:p-8">
+                    {{-- 🆕 Botón de Like para el Post --}}
+                    <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-700">
+                        <livewire:post-like-button :post="$post" :key="'post-like-'.$post->id" />
+                    </div>
+
                     <div class="prose prose-lg dark:prose-invert max-w-none text-[var(--text-secondary)]
                                 prose-headings:text-[var(--text-primary)] prose-strong:text-white
                                 prose-a:text-[var(--text-primary)] prose-blockquote:border-[var(--text-primary)]
@@ -33,16 +37,23 @@
                 </div>
             </article>
 
+            {{-- Sección de comentarios --}}
             <div class="mt-8 bg-[var(--bg-secondary)] dark:bg-gray-800 shadow-sm sm:rounded-lg">
                 <div class="p-6 md:p-8">
-                    <h2 class="text-2xl font-bold text-[var(--text-primary)] dark:text-gray-100">Comentarios ({{ $post->comments->count() }})</h2>
+                    <h2 class="text-2xl font-bold text-[var(--text-primary)] dark:text-gray-100">
+                        Comentarios ({{ $post->comments->count() }})
+                    </h2>
 
+                    {{-- Formulario para comentar --}}
                     <div class="mt-6">
                         @auth
                             <form action="{{ route('comments.store', $post) }}" method="POST">
                                 @csrf
-                                <textarea name="body" rows="4" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" placeholder="Escribe tu comentario..." required></textarea>
-                                <button type="submit" class="mt-4 inline-flex items-center px-4 py-2 bg-gray-800 border rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700">
+                                <textarea name="body" rows="4" 
+                                    class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" 
+                                    placeholder="Escribe tu comentario..." required></textarea>
+                                <button type="submit" 
+                                    class="mt-4 inline-flex items-center px-4 py-2 bg-gray-800 border rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700">
                                     Publicar Comentario
                                 </button>
                             </form>
@@ -53,6 +64,7 @@
                         @endauth
                     </div>
 
+                    {{-- Lista de comentarios --}}
                     <div class="mt-8 space-y-6">
                         @forelse ($post->comments as $comment)
                             @if ($comment->user)
@@ -63,10 +75,16 @@
                                             alt="Avatar">
                                     </a>
                                     <div class="flex-grow bg-[var(--bg-primary)] p-4 rounded-lg">
-                                        <p>
-                                            <a href="{{ route('profiles.show', $comment->user) }}" class="font-bold hover:underline text-white">{{ $comment->user->name }}</a>
-                                            <span class="text-xs text-gray-400 ml-2">{{ $comment->created_at->diffForHumans() }}</span>
-                                        </p>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <p>
+                                                <a href="{{ route('profiles.show', $comment->user) }}" class="font-bold hover:underline text-white">
+                                                    {{ $comment->user->name }}
+                                                </a>
+                                                <span class="text-xs text-gray-400 ml-2">{{ $comment->created_at->diffForHumans() }}</span>
+                                            </p>
+                                            {{-- 🆕 Botón de Like para comentarios --}}
+                                            <livewire:comment-like-button :comment="$comment" :key="'comment-like-'.$comment->id" />
+                                        </div>
                                         <p class="mt-2 text-[var(--text-secondary)]">
                                             {!! nl2br(e($comment->body)) !!}
                                         </p>
@@ -79,7 +97,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </x-app-layout>
