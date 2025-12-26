@@ -12,7 +12,7 @@ services:
     environment:
       APP_NAME: Questlog
       APP_ENV: production
-      APP_KEY: ${APP_KEY}
+      APP_KEY: 
       APP_DEBUG: "false"
       APP_URL: http://localhost:8000
       
@@ -21,7 +21,7 @@ services:
       DB_PORT: 3306
       DB_DATABASE: questlog
       DB_USERNAME: questlog_user
-      DB_PASSWORD: secret123
+      DB_PASSWORD: 
       
       CACHE_DRIVER: database
       SESSION_DRIVER: database
@@ -41,7 +41,7 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: questlog
-      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_ROOT_PASSWORD: 
       MYSQL_USER: questlog_user
       MYSQL_PASSWORD: secret123
     volumes:
