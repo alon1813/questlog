@@ -1,48 +1,50 @@
-# Imagen base de PHP 8.2 con Apache
 FROM php:8.2-apache
 
-# Instalar dependencias del sistema
-# En el paso 2, cambia libpq-dev por default-libmysqlclient-dev
-# Y pdo_pgsql por pdo_mysql
-
+# Instalar dependencias
 RUN apt-get update && apt-get install -y \
     default-libmysqlclient-dev \
     libzip-dev \
     unzip \
-    nodejs \
-    npm \
-    && docker-php-ext-install pdo pdo_mysql bcmath zip
+    curl \
+    git \
+    && docker-php-ext-install pdo pdo_mysql bcmath zip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
-  CMD curl -f http://localhost/up || exit 1
-# 3. Configurar Apache para que la raíz sea /public (Estándar de Laravel)
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
+# Instalar Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# 4. Habilitar mod_rewrite de Apache
-RUN a2enmod rewrite
+# Configurar Apache
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
+    && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf \
+    && a2enmod rewrite
 
-# 5. Copiar los archivos del proyecto al contenedor
-COPY . /var/www/html
+WORKDIR /var/www/html
 
-# 6. Instalar dependencias de PHP (Composer)
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN composer install --no-interaction --optimize-autoloader --no-dev
+# Copiar Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# 7. Instalar dependencias de Frontend (NPM) y construir recursos (Vite)
-RUN npm install
-RUN npm run build
+# Copiar archivos
+COPY . .
 
-# 8. Permisos correctos para carpetas de almacenamiento
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Instalar dependencias
+RUN composer install --no-dev --optimize-autoloader --no-interaction \
+    && npm ci \
+    && npm run build
 
-# 9. Puerto que expondrá el contenedor (Render usa la variable PORT, pero por defecto 80)
+# Permisos
+RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache
+
+# Copiar y dar permisos al script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
+    && dos2unix /usr/local/bin/docker-entrypoint.sh 2>/dev/null || sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh
+
 EXPOSE 80
 
-# 10. Comando de inicio: Migrar la BD y luego iniciar Apache
-CMD php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache && \
-    php artisan migrate --force && \
-    apache2-foreground
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["apache2-foreground"]

@@ -13,3 +13,8 @@ storage/logs/*
 Thumbs.db
 tests/
 .phpunit.result.cache
+public/build/
+public/hot
+.npm
+npm-debug.log
+yarn-error.log

@@ -1,3 +1,4 @@
+{{-- resources/views/livewire/admin/user-management.blade.php --}}
 <div>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -73,14 +74,39 @@
                                         </select>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        @if($user->warnings_count > 0)
-                                            <span class="px-2 py-1 text-xs font-bold rounded-full 
-                                                {{ $user->warnings_count >= 3 ? 'bg-red-600 text-white' : 'bg-yellow-500 text-black' }}">
-                                                ⚠️ {{ $user->warnings_count }}/3
-                                            </span>
-                                        @else
-                                            <span class="text-gray-400">Sin avisos</span>
-                                        @endif
+                                        <div class="flex items-center space-x-2">
+                                            {{-- Mostrar contador de avisos --}}
+                                            @if($user->warnings_count > 0)
+                                                <span class="px-2 py-1 text-xs font-bold rounded-full 
+                                                    {{ $user->warnings_count >= 3 ? 'bg-red-600 text-white' : 'bg-yellow-500 text-black' }}">
+                                                    ⚠️ {{ $user->warnings_count }}/3
+                                                </span>
+                                            @else
+                                                <span class="text-gray-400 text-xs">Sin avisos</span>
+                                            @endif
+                                            
+                                            {{-- Botón para añadir aviso (solo si no está suspendido y tiene menos de 3 avisos) --}}
+                                            @if($user->status !== 'suspended' && $user->warnings_count < 3)
+                                                <button 
+                                                    wire:click="addWarning({{ $user->id }})"
+                                                    wire:confirm="¿Enviar advertencia a {{ $user->name }}?"
+                                                    class="px-2 py-1 bg-yellow-600 hover:bg-yellow-700 text-white text-xs rounded-md transition-colors"
+                                                    title="Añadir advertencia">
+                                                    + Avisar
+                                                </button>
+                                            @endif
+                                            
+                                            {{-- Botón para resetear avisos (solo si tiene avisos) --}}
+                                            @if($user->warnings_count > 0 && $user->status !== 'suspended')
+                                                <button 
+                                                    wire:click="resetWarnings({{ $user->id }})"
+                                                    wire:confirm="¿Resetear todos los avisos de {{ $user->name }}?"
+                                                    class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-md transition-colors"
+                                                    title="Resetear avisos">
+                                                    🔄 Reset
+                                                </button>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         <button 
